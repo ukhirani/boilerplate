@@ -4,7 +4,6 @@ Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -14,12 +13,11 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "bp",
 	Short: "A cli tool to ironically skip the boilerplate",
-	Long:  `A CLI tool written in go that lets you skip writing the repetitive boiplerplate and let's you focus on what actually matters`,
+	Long:  "A cli tool to ironically skip the boilerplate",
+
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("you are into boilerplate")
-	},
+	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -40,5 +38,5 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
