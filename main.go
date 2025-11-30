@@ -1,7 +1,11 @@
+/*
+Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
+
+*/
 package main
 
-import "github.com/spf13/cobra"
+import "bp/cmd"
 
 func main() {
-
+	cmd.Execute()
 }
