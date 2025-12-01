@@ -16,10 +16,6 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "prints out the current version of the application",
 	Long:  `this command tells you the current version of the application`,
-
-	// TODO: find out how to make the --version and the -V the aliases for the version command
-	Aliases: []string{"--version", "-V"},
-
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(VERSION)
 	},
