@@ -23,6 +23,12 @@ var rootCmd = &cobra.Command{
 
 func RootCmdRunner(cmd *cobra.Command, args []string) {
 
+	// check if the version command is called
+	if version {
+		versionCmd.Run(cmd, args)
+		os.Exit(0)
+	}
+
 }
 
 func Execute() {
