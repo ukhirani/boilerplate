@@ -108,12 +108,16 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 
 	// the logic to check whether the current file exists or not
 	currDir := currDirValidator(fileName)
-	fmt.Println("File Found Successfully at : ", currDir)
 
 	// the logic to check whether the template can be created or not
 	destDir := destDirValidator(templateName)
-	fmt.Println("Template Can be Created at : ", destDir)
 
+	if err := utils.CopyDir(currDir, destDir); err != nil {
+		fmt.Println("Error creating template : ", err)
+	}
+
+	fmt.Println("Template Created Successfully : ", templateName)
+	fmt.Println("Template Located at : ", destDir)
 }
 
 func init() {
