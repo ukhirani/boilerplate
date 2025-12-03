@@ -24,17 +24,19 @@ var addCmd = &cobra.Command{
 	Run:   AddCmdRunner,
 }
 
-func AddCmdRunner(cmd *cobra.Command, args []string) {
+/*
+arguments:
+- fileName (string) : the file's name that needs to be copied as a template
 
-	if len(templateName) == 0 {
-		fmt.Println("Template name not mentioned. Use the flag --name or -n to pass the template name")
-		os.Exit(1)
-	}
+This function does the following things :
+- Fetches the current directory
+- Appends the fileName to it
+- Checks for the presence of this file
 
-	if len(args) != 1 {
-		fmt.Println(`invalid amount of file/folder(s) passed as a template : `, len(args), "passed !")
-		os.Exit(1)
-	}
+if yes -> return the concatenated fileName
+else ->   exit
+*/
+func currDirValidator(fileName string) string {
 
 	//get the current directory where you are
 	currDir, err := os.Getwd()
@@ -43,9 +45,9 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	currDir = filepath.Join(currDir, args[0])
+	currDir = filepath.Join(currDir, fileName)
 
-	// check if current directory exists
+	//check if current directory exists
 	currDirexists, err := utils.Exists(currDir)
 
 	// check for any unknown error
@@ -60,7 +62,29 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	fmt.Println("File Exists : ", currDir, currDirexists)
+	return currDir
+
+}
+func AddCmdRunner(cmd *cobra.Command, args []string) {
+
+	if len(templateName) == 0 {
+		fmt.Println("Template name not mentioned. Use the flag --name or -n to pass the template name")
+		os.Exit(1)
+	}
+
+	if len(args) != 1 {
+		fmt.Println(`invalid amount of file/folder(s) passed as a template : `, len(args), "passed !")
+		os.Exit(1)
+	}
+
+	//then get the file name entered as the argument
+	fileName := args[0]
+
+	// the logic to check whether the current file exists or not
+
+	currDir := currDirValidator(fileName)
+	fmt.Println("File Exists : ", currDir)
+	// destDir := destDirValidator(templateName)
 
 }
 
