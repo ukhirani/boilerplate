@@ -67,11 +67,6 @@ func currDirValidator(fileName string) string {
 }
 func AddCmdRunner(cmd *cobra.Command, args []string) {
 
-	if len(templateName) == 0 {
-		fmt.Println("Template name not mentioned. Use the flag --name or -n to pass the template name")
-		os.Exit(1)
-	}
-
 	if len(args) != 1 {
 		fmt.Println(`invalid amount of file/folder(s) passed as a template : `, len(args), "passed !")
 		os.Exit(1)
@@ -93,4 +88,7 @@ func init() {
 
 	//defining the flags
 	addCmd.Flags().StringVarP(&templateName, "name", "n", "", "Name of the template that you wish to add")
+
+	//marking flags as required
+	addCmd.MarkFlagRequired("name")
 }
