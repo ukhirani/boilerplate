@@ -23,3 +23,6 @@ func IsValidDirName(name string) bool {
 	os.Remove(tmp)
 	return true
 }
+
+//TODO: However, this version is not accurate as filename having characters "/" are still valid in linux but not in windows
+//// Need to imply something more strict, and have a global rule-set
