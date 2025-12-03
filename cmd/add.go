@@ -99,11 +99,18 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 	//then get the file name entered as the argument
 	fileName := args[0]
 
-	// the logic to check whether the current file exists or not
+	// validate that whether the template name is valid or not
+	// since we are going to create a directory of that name, it better be a valid directory name
+	if !utils.IsValidDirName(templateName) {
+		fmt.Println("Template name not allowed : only letters, numbers and underscores are supported")
+		os.Exit(1)
+	}
 
+	// the logic to check whether the current file exists or not
 	currDir := currDirValidator(fileName)
 	fmt.Println("File Found Successfully at : ", currDir)
 
+	// the logic to check whether the template can be created or not
 	destDir := destDirValidator(templateName)
 	fmt.Println("Template Can be Created at : ", destDir)
 
