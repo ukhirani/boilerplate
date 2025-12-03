@@ -39,5 +39,7 @@ func Execute() {
 }
 
 func init() {
+
+	// --version and -v both wil call the versionCmd
 	rootCmd.Flags().BoolVarP(&version, "version", "v", false, versionCmd.Short)
 }
