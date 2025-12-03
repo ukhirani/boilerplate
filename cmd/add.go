@@ -4,6 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"bp/constants"
 	"bp/utils"
 	"fmt"
 	"os"
@@ -67,6 +68,33 @@ func currDirValidator(fileName string) string {
 
 }
 
+func destDirValidator(templateName string) string {
+
+	homeDir, _ := os.UserHomeDir()
+
+	//destDir = homeDir + location where we store templates + templateName
+	destDir := filepath.Join(homeDir, constants.BOILERPLATE_DIR, constants.TEMPLATE_DIR, templateName)
+
+	//check if destDir directory exists
+	destDirexists, err := utils.Exists(destDir)
+
+	// check for any unknown error
+	if err != nil {
+		fmt.Println("Unexpected error occurred : ", err)
+		os.Exit(1)
+	}
+
+	// if template exists
+	if destDirexists {
+		fmt.Println("Template Already Exists : ", destDir)
+		os.Exit(1)
+	}
+
+	//return the path where the template needs to be stored
+	return destDir
+
+}
+
 func AddCmdRunner(cmd *cobra.Command, args []string) {
 	//then get the file name entered as the argument
 	fileName := args[0]
@@ -74,8 +102,10 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 	// the logic to check whether the current file exists or not
 
 	currDir := currDirValidator(fileName)
-	fmt.Println("File Exists : ", currDir)
-	// destDir := destDirValidator(templateName)
+	fmt.Println("File Found Successfully at : ", currDir)
+
+	destDir := destDirValidator(templateName)
+	fmt.Println("Template Can be Created at : ", destDir)
 
 }
 
