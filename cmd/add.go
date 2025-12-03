@@ -21,6 +21,7 @@ var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a template to your arsenal",
 	Long:  `Add a template to your arsenal`,
+	Args:  cobra.ExactArgs(1), // This ensures exactly one fileName is passed
 	Run:   AddCmdRunner,
 }
 
@@ -65,13 +66,8 @@ func currDirValidator(fileName string) string {
 	return currDir
 
 }
+
 func AddCmdRunner(cmd *cobra.Command, args []string) {
-
-	if len(args) != 1 {
-		fmt.Println(`invalid amount of file/folder(s) passed as a template : `, len(args), "passed !")
-		os.Exit(1)
-	}
-
 	//then get the file name entered as the argument
 	fileName := args[0]
 
