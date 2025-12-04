@@ -1,11 +1,11 @@
 /*
-Copyright © 2025 Umang Hirani
+Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
 */
 package cmd
 
 import (
-	"github.com/ukhirani/boilerplate/utils"
 	"fmt"
+	"github.com/ukhirani/boilerplate/utils"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -28,7 +28,7 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		fmt.Printf("Template %v Doesn't Exist at %v", templateName, templateDir)
 		os.Exit(1)
 	}
-	fmt.Printf("Template %v Exist at %v", templateName, templateDir)
+	//fmt.Printf("Template %v Exist at %v", templateName, templateDir)
 
 	//copy template in the current directory
 	err := utils.CopyTemplateHere(templateDir)
@@ -53,6 +53,7 @@ func init() {
 	rootCmd.AddCommand(generateCmd)
 
 	//defining the flags
+	//TODO: use the --dir and the --name flags
 	generateCmd.Flags().StringVarP(&generatedFileName, "name", "n", "", "(not applicable for directories) The name of the generated file")
 	generateCmd.Flags().StringVarP(&generatedFileDir, "dir", "d", "", "(optional) The directory of the generated file or directory ")
 
