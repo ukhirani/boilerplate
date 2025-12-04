@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/tools/godoc/util"
 )
 
 var (
@@ -70,13 +71,7 @@ func currDirValidator(fileName string) string {
 
 func destDirValidator(templateName string) string {
 
-	homeDir, _ := os.UserHomeDir()
-
-	//destDir = homeDir + location where we store templates + templateName
-	destDir := filepath.Join(homeDir, constants.BOILERPLATE_DIR, constants.TEMPLATE_DIR, templateName)
-
-	//check if destDir directory exists
-	destDirexists, err := utils.Exists(destDir)
+	destDirExists, err, destDir := utils.IsTemplateExists(templateName)
 
 	// check for any unknown error
 	if err != nil {
@@ -85,7 +80,7 @@ func destDirValidator(templateName string) string {
 	}
 
 	// if template exists
-	if destDirexists {
+	if destDirExists {
 		fmt.Println("Template Already Exists : ", destDir)
 		os.Exit(1)
 	}
@@ -111,8 +106,6 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 
 	// the logic to check whether the template can be created or not
 	destDir := destDirValidator(templateName)
-
-	//TODO : implement the logic to find out whether to call the CopyDir or CopyFile
 
 	//check whether the filetype is direcoty or just file
 	isDir, err := utils.IsDirectory(fileName)
