@@ -112,8 +112,26 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 	// the logic to check whether the template can be created or not
 	destDir := destDirValidator(templateName)
 
-	if err := utils.CopyDir(currDir, destDir); err != nil {
-		fmt.Println("Error creating template : ", err)
+	//TODO : implement the logic to find out whether to call the CopyDir or CopyFile
+
+	//check whether the filetype is direcoty or just file
+	isDir, err := utils.IsDirectory(fileName)
+
+	if err != nil {
+		fmt.Println("Error Checking Filetype :", err)
+	}
+
+	//if it's a directory
+	if isDir {
+		if err := utils.CopyDir(currDir, destDir); err != nil {
+			fmt.Println("Error creating template (dir) : ", err)
+			os.Exit(1)
+		}
+	}
+	//if not, then it's regular file
+	if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
+		fmt.Println("Error creating template (file) : ", err)
+		os.Exit(1)
 	}
 
 	fmt.Println("Template Created Successfully : ", templateName)
