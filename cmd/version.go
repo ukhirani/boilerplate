@@ -4,7 +4,7 @@ Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
 package cmd
 
 import (
-	"bp/constants"
+	"github.com/ukhirani/boilerplate/constants"
 	"fmt"
 
 	"github.com/spf13/cobra"

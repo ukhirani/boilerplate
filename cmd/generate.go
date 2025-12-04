@@ -4,7 +4,7 @@ Copyright © 2025 Umang Hirani
 package cmd
 
 import (
-	"bp/utils"
+	"github.com/ukhirani/boilerplate/utils"
 	"fmt"
 	"os"
 

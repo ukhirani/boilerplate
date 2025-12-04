@@ -1,7 +1,7 @@
 package utils
 
 import (
-	c "bp/constants"
+	c "github.com/ukhirani/boilerplate/constants"
 	"os"
 	"path/filepath"
 )
@@ -9,12 +9,13 @@ import (
 // checks whether a template exists , returns the status, the error (if occurred) and the directory where it needs to be created (if possible)
 func IsTemplateExists(templateName string) (bool, error, string) {
 
-	homeDir, err := os.UserHomeDir()
+	homeDir, _ := os.UserHomeDir()
 
 	//destDir = homeDir + location where we store templates + templateName
 	destDir := filepath.Join(homeDir, c.BOILERPLATE_DIR, c.TEMPLATE_DIR, templateName)
 
 	//check if destDir directory exists
+	templateExists, err := Exists(destDir)
 
-	return templateExists, nil, destDir
+	return templateExists, err, destDir
 }
