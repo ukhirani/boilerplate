@@ -24,6 +24,7 @@ func CopyFile(srcDir, destDir, fileName string) error {
 		os.Exit(1)
 	}
 
+	// make destDir the actual fileName where it needs to be copied
 	destDir = filepath.Join(destDir, fileName)
 
 	if isDestExists, err := Exists(destDir); isDestExists {
