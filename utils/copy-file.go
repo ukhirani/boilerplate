@@ -19,8 +19,9 @@ func CopyFile(srcDir, destDir, fileName string) error {
 	//create template directory
 	err = os.MkdirAll(destDir, os.ModePerm)
 	if err != nil {
-		fmt.Println("Falied to Create Directory : ", destDir)
-		fmt.Println("Error Message :", err)
+		fmt.Println("[ERROR] Failed to create directory")
+		fmt.Printf("  Path: %s\n", destDir)
+		fmt.Printf("  Error: %v\n", err)
 		os.Exit(1)
 	}
 

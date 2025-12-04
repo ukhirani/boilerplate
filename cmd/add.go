@@ -4,10 +4,11 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"github.com/ukhirani/boilerplate/utils"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/ukhirani/boilerplate/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -19,10 +20,19 @@ var (
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "Add a template to your arsenal",
-	Long:  `Add a template to your arsenal`,
-	Args:  cobra.ExactArgs(1), // This ensures exactly one fileName is passed
-	Run:   AddCmdRunner,
+	Short: "Add a file or directory as a reusable template",
+	Long: `Save a file or directory from the current location as a reusable template.
+
+Template names must contain only letters, numbers, and underscores.
+
+Usage:
+  bp add <file-or-directory> --name <template-name>
+
+Examples:
+  bp add script.sh --name shell-script
+  bp add ./components --name react-components`,
+	Args: cobra.ExactArgs(1), // This ensures exactly one fileName is passed
+	Run:  AddCmdRunner,
 }
 
 /*
@@ -42,7 +52,8 @@ func currDirValidator(fileName string) string {
 	//get the current directory where you are
 	currDir, err := os.Getwd()
 	if err != nil {
-		fmt.Println("Error getting current directory")
+		fmt.Println("[ERROR] Failed to get current directory")
+		fmt.Println("  Error:", err)
 		os.Exit(1)
 	}
 
@@ -53,13 +64,17 @@ func currDirValidator(fileName string) string {
 
 	// check for any unknown error
 	if err != nil {
-		fmt.Println("Unexpected error occurred : ", err)
+		fmt.Println("[ERROR] Unexpected error occurred")
+		fmt.Printf("  Path: %s\n", currDir)
+		fmt.Printf("  Error: %v\n", err)
 		os.Exit(1)
 	}
 
 	// if current file does not exist
 	if !currDirexists {
-		fmt.Println("File Not Found : ", currDir)
+		fmt.Println("[ERROR] File or directory not found")
+		fmt.Printf("  Path: %s\n", currDir)
+		fmt.Println("  Make sure the file exists in the current directory")
 		os.Exit(1)
 	}
 
@@ -73,13 +88,17 @@ func destDirValidator(templateName string) string {
 
 	// check for any unknown error
 	if err != nil {
-		fmt.Println("Unexpected error occurred : ", err)
+		fmt.Println("[ERROR] Unexpected error occurred")
+		fmt.Printf("  Error: %v\n", err)
 		os.Exit(1)
 	}
 
 	// if template exists
 	if destDirExists {
-		fmt.Println("Template Already Exists : ", destDir)
+		fmt.Println("[ERROR] Template already exists")
+		fmt.Printf("  Template: %s\n", templateName)
+		fmt.Printf("  Location: %s\n", destDir)
+		fmt.Println("  Use a different template name or remove the existing template")
 		os.Exit(1)
 	}
 
@@ -95,7 +114,9 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 	// validate that whether the template name is valid or not
 	// since we are going to create a directory of that name, it better be a valid directory name
 	if !utils.IsValidDirName(templateName) {
-		fmt.Println("Template name not allowed : only letters, numbers and underscores are supported")
+		fmt.Println("[ERROR] Invalid template name")
+		fmt.Printf("  Template name: %s\n", templateName)
+		fmt.Println("  Allowed characters: letters, numbers, and underscores only")
 		os.Exit(1)
 	}
 
@@ -109,32 +130,39 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 	isDir, err := utils.IsDirectory(fileName)
 
 	if err != nil {
-		fmt.Println("Error Checking Filetype :", err)
+		fmt.Println("[ERROR] Failed to determine file type")
+		fmt.Printf("  Error: %v\n", err)
+		os.Exit(1)
 	}
 
 	//if it's a directory
 	if isDir {
 		if err := utils.CopyDir(currDir, destDir); err != nil {
-			fmt.Println("Error creating template (dir) : ", err)
+			fmt.Println("[ERROR] Failed to create template directory")
+			fmt.Printf("  Template: %s\n", templateName)
+			fmt.Printf("  Error: %v\n", err)
 			os.Exit(1)
 		}
 	} else {
 		//if not, then it's regular file
 		if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
-			fmt.Println("Error creating template (file) : ", err)
+			fmt.Println("[ERROR] Failed to create template file")
+			fmt.Printf("  Template: %s\n", templateName)
+			fmt.Printf("  Error: %v\n", err)
 			os.Exit(1)
 		}
 	}
 
-	fmt.Println("Template Created Successfully : ", templateName)
-	fmt.Println("Template Located at : ", destDir)
+	fmt.Println("[SUCCESS] Template created successfully")
+	fmt.Printf("  Name: %s\n", templateName)
+	fmt.Printf("  Location: %s\n", destDir)
 }
 
 func init() {
 	rootCmd.AddCommand(addCmd)
 
 	//defining the flags
-	addCmd.Flags().StringVarP(&templateName, "name", "n", "", "Name of the template that you wish to add")
+	addCmd.Flags().StringVarP(&templateName, "name", "n", "", "Template name (letters, numbers, underscores only)")
 
 	//marking flags as required
 	addCmd.MarkFlagRequired("name")

@@ -5,8 +5,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/ukhirani/boilerplate/utils"
 	"os"
+
+	"github.com/ukhirani/boilerplate/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -25,25 +26,38 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	templateExists, _, templateDir := utils.IsTemplateExists(templateName)
 
 	if !templateExists {
-		fmt.Printf("Template %v Doesn't Exist at %v", templateName, templateDir)
+		fmt.Println("[ERROR] Template not found")
+		fmt.Printf("  Template: %s\n", templateName)
+		fmt.Printf("  Expected location: %s\n", templateDir)
+		fmt.Println("  Use 'bp list' to see available templates")
 		os.Exit(1)
 	}
-	//fmt.Printf("Template %v Exist at %v", templateName, templateDir)
 
 	//copy template in the current directory
 	err := utils.CopyTemplateHere(templateDir)
 	if err != nil {
-		fmt.Println("Error Copying Template: ", err)
+		fmt.Println("[ERROR] Failed to copy template")
+		fmt.Printf("  Template: %s\n", templateName)
+		fmt.Printf("  Error: %v\n", err)
+		os.Exit(1)
 	}
-	fmt.Printf("Template %v recreated successfully !", templateName)
+	fmt.Println("[SUCCESS] Template generated successfully")
+	fmt.Printf("  Template: %s\n", templateName)
 
 }
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
-	Use:     "generate",
-	Short:   "Generate a file/directory from a template",
-	Long:    "Generate a file/directory from a template",
+	Use:   "generate",
+	Short: "Generate a file or directory from a template",
+	Long: `Copy a template to the current directory, preserving its structure and content.
+
+Usage:
+  bp generate <template-name> [flags]
+
+Examples:
+  bp generate react-component
+  bp gen my-template`,
 	Aliases: []string{"gen", "create"},
 	Run:     GenerateCmdRunner,
 	Args:    cobra.ExactArgs(1),
@@ -54,8 +68,8 @@ func init() {
 
 	//defining the flags
 	//TODO: use the --dir and the --name flags
-	generateCmd.Flags().StringVarP(&generatedFileName, "name", "n", "", "(not applicable for directories) The name of the generated file")
-	generateCmd.Flags().StringVarP(&generatedFileDir, "dir", "d", "", "(optional) The directory of the generated file or directory ")
+	generateCmd.Flags().StringVarP(&generatedFileName, "name", "n", "", "Custom name for the generated file (files only, not directories)")
+	generateCmd.Flags().StringVarP(&generatedFileDir, "dir", "d", "", "Target directory for generation (default: current directory)")
 
 	//making the flags as required
 	//generateCmd.MarkFlagRequired("name")

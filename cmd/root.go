@@ -15,8 +15,9 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:   "bp",
-	Short: "A cli tool to ironically skip the boilerplate",
-	Long:  "A cli tool to ironically skip the boilerplate",
+	Short: "A CLI tool to ironically skip writing boilerplate code",
+	Long: `Manage reusable file and directory templates. Save common code structures 
+as templates and generate them instantly.`,
 
 	Run: RootCmdRunner,
 }
