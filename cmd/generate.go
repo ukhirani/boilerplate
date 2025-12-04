@@ -4,7 +4,9 @@ Copyright © 2025 Umang Hirani
 package cmd
 
 import (
+	"bp/utils"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -15,10 +17,19 @@ var (
 )
 
 func GenerateCmdRunner(cmd *cobra.Command, args []string) {
+	//TODO: copy the damn files
 
-	fmt.Println("Args Called :", args)
-	fmt.Println("generatedFileName Called :", generatedFileName)
-	fmt.Println("generatedFileDir Called :", generatedFileDir)
+	// we are assured we only have one arguments
+	templateName := args[0]
+
+	templateExists, _, templateDir := utils.IsTemplateExists(templateName)
+
+	if !templateExists {
+		fmt.Printf("Template %v Doesn't Exist at %v", templateName, templateDir)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Template %v Exist at %v", templateName, templateDir)
 
 }
 
