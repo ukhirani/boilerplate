@@ -127,11 +127,12 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 			fmt.Println("Error creating template (dir) : ", err)
 			os.Exit(1)
 		}
-	}
-	//if not, then it's regular file
-	if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
-		fmt.Println("Error creating template (file) : ", err)
-		os.Exit(1)
+	} else {
+		//if not, then it's regular file
+		if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
+			fmt.Println("Error creating template (file) : ", err)
+			os.Exit(1)
+		}
 	}
 
 	fmt.Println("Template Created Successfully : ", templateName)
