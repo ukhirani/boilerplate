@@ -4,9 +4,12 @@ Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/ukhirani/boilerplate/services"
 )
 
 var (
@@ -33,6 +36,7 @@ func RootCmdRunner(cmd *cobra.Command, args []string) {
 }
 
 func Execute() {
+	services.InitViper()
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
