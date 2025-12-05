@@ -11,10 +11,13 @@ import (
 	"github.com/ukhirani/boilerplate/utils"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/ukhirani/boilerplate/types"
 )
 
 var (
 	templateName string
+	newTemplate  types.Config
 )
 
 // addCmd represents the add command
@@ -107,6 +110,20 @@ func destDirValidator(templateName string) string {
 
 }
 
+// TODO: as of now this only generates the configs, can be easily refactored to generate template files also
+func GenerateTemplate(newTemplate types.Config) {
+
+	//TODO: isn't it better to make a map and iterate over it ?
+	viper.SetConfigName(newTemplate.Name)
+	viper.Set("Name", newTemplate.Name)
+	viper.Set("IsDir", newTemplate.IsDir)
+
+	if err := viper.SafeWriteConfig(); err != nil {
+		fmt.Println(err)
+	}
+
+}
+
 func AddCmdRunner(cmd *cobra.Command, args []string) {
 	//then get the file name entered as the argument
 	fileName := args[0]
@@ -135,6 +152,8 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	//TODO: refactor everything below this in this function
+
 	//if it's a directory
 	if isDir {
 		if err := utils.CopyDir(currDir, destDir); err != nil {
@@ -145,6 +164,7 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 		}
 	} else {
 		//if not, then it's regular file
+		//since copyDir function copies all the files rather than one
 		if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
 			fmt.Println("[ERROR] Failed to create template file")
 			fmt.Printf("  Template: %s\n", templateName)
@@ -153,9 +173,11 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	fmt.Println("[SUCCESS] Template created successfully")
-	fmt.Printf("  Name: %s\n", templateName)
-	fmt.Printf("  Location: %s\n", destDir)
+	newTemplate.Name = templateName
+	newTemplate.IsDir = isDir
+
+	GenerateTemplate(newTemplate)
+	fmt.Printf("[SUCCESS] Template %v created successfully", templateName)
 }
 
 func init() {

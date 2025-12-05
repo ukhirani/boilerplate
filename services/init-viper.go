@@ -15,11 +15,11 @@ var configPaths = []string{
 
 func InitViper() {
 
-	for _, path := range configPaths {
-		//creating the config paths if not existing
-		os.MkdirAll(path, os.ModePerm)
+	viper.SetConfigType("toml")
 
-		//setting all the possible config paths
+	for _, path := range configPaths {
+		//creating the config path if not existing
+		os.MkdirAll(path, os.ModePerm)
 		viper.AddConfigPath(path)
 	}
 

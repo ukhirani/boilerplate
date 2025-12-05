@@ -1,10 +1,10 @@
 package types
 
 type Config struct {
-	name    string
-	isDir   bool
-	preCmd  []string
-	postCmd []string
+	Name    string
+	IsDir   bool
+	PreCmd  []string
+	PostCmd []string
 	// createdAt and modifiedAt
 }
 
