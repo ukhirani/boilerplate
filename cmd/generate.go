@@ -24,7 +24,7 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	templateName := args[0]
 
 	//check whether the template exists or not
-	templateExists, _, templateDir := utils.IsTemplateExists(templateName)
+	templateExists, templateDir := utils.IsTemplateExists(templateName)
 
 	if !templateExists {
 		fmt.Println("[ERROR] Template not found")
@@ -37,13 +37,11 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	//copy template in the current directory
 	err := utils.CopyDir(templateDir, constants.CURR_DIR)
 	if err != nil {
-		fmt.Println("[ERROR] Failed to copy template")
-		fmt.Printf("  Template: %s\n", templateName)
+		fmt.Println("[ERROR] Failed to copy template : ", templateName)
 		fmt.Printf("  Error: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println("[SUCCESS] Template generated successfully")
-	fmt.Printf("  Template: %s\n", templateName)
+	fmt.Printf("[SUCCESS] Template %v generated successfully", templateName)
 
 }
 

@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/utils"
 
 	"github.com/spf13/cobra"
@@ -52,26 +53,13 @@ else ->   exit
 */
 func currDirValidator(fileName string) string {
 
-	//get the current directory where you are
-	currDir, err := os.Getwd()
-	if err != nil {
-		fmt.Println("[ERROR] Failed to get current directory")
-		fmt.Println("  Error:", err)
-		os.Exit(1)
-	}
-
-	currDir = filepath.Join(currDir, fileName)
+	//get the current directory where you are + fileName
+	currDir := filepath.Join(constants.CURR_DIR, fileName)
 
 	//check if current directory exists
-	currDirexists, err := utils.Exists(currDir)
+	currDirexists := utils.Exists(currDir)
 
 	// check for any unknown error
-	if err != nil {
-		fmt.Println("[ERROR] Unexpected error occurred")
-		fmt.Printf("  Path: %s\n", currDir)
-		fmt.Printf("  Error: %v\n", err)
-		os.Exit(1)
-	}
 
 	// if current file does not exist
 	if !currDirexists {
@@ -82,19 +70,11 @@ func currDirValidator(fileName string) string {
 	}
 
 	return currDir
-
 }
 
 func destDirValidator(templateName string) string {
 
-	destDirExists, err, destDir := utils.IsTemplateExists(templateName)
-
-	// check for any unknown error
-	if err != nil {
-		fmt.Println("[ERROR] Unexpected error occurred")
-		fmt.Printf("  Error: %v\n", err)
-		os.Exit(1)
-	}
+	destDirExists, destDir := utils.IsTemplateExists(templateName)
 
 	// if template exists
 	if destDirExists {
