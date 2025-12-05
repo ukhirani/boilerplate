@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/utils"
 
 	"github.com/spf13/cobra"
@@ -34,7 +35,7 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	}
 
 	//copy template in the current directory
-	err := utils.CopyTemplateHere(templateDir)
+	err := utils.CopyDir(templateDir, constants.CURR_DIR)
 	if err != nil {
 		fmt.Println("[ERROR] Failed to copy template")
 		fmt.Printf("  Template: %s\n", templateName)
