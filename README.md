@@ -1,6 +1,5 @@
-# boilerplate
+<img width="1100" height="409" alt="image" src="https://github.com/user-attachments/assets/5cf7a26d-aaca-489e-84ec-4b54643c92de" />
 
-A CLI tool to ironically skip writing the boilerplate!
 
 ## Installation
 
