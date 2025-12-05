@@ -28,8 +28,8 @@ func CopyFile(srcDir, destDir, fileName string) error {
 	// make destDir the actual fileName where it needs to be copied
 	destDir = filepath.Join(destDir, fileName)
 
-	if isDestExists, err := Exists(destDir); isDestExists {
-		return fmt.Errorf("File already exists, choose a different destination file : %s", err)
+	if isDestExists := Exists(destDir); isDestExists {
+		return fmt.Errorf("File already exists, choose a different destination file ")
 	}
 
 	// Create the destination file for writing.
