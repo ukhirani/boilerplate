@@ -4,7 +4,9 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 
@@ -94,6 +96,10 @@ func GenerateTemplate(fileName, templateName string, isDir bool) {
 		if err := utils.CopyDir(currDir, destDir); err != nil {
 			fmt.Printf("[ERROR] Failed to create template [ %s ]", templateName)
 			fmt.Printf("  Error: %v\n", err)
+			if errors.Is(err, fs.ErrExist) {
+				fmt.Println("Some files might be copied upto this point from the template")
+				fmt.Println("Please delete all the duplicate files and try again")
+			}
 			os.Exit(1)
 		}
 	} else {
@@ -113,7 +119,7 @@ func GenerateTemplate(fileName, templateName string, isDir bool) {
 
 	if err := viper.SafeWriteConfig(); err != nil {
 		fmt.Println(err)
-		// TODO: don't we have to fallback when we can't generate a config
+		// TODO: don't we have to fallback when we can't generate a config ?
 	}
 
 }

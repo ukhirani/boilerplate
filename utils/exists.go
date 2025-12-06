@@ -23,9 +23,7 @@ func Exists(path string) bool {
 	}
 
 	// none of the above cases, some other kind of error
-	if err != nil {
-		fmt.Println("[ERROR] Unexpected error occurred : ", err)
-		os.Exit(1)
-	}
+	fmt.Println("[ERROR] Unexpected error occurred : ", err)
+	os.Exit(1)
 	return false
 }

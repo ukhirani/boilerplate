@@ -8,6 +8,8 @@ import (
 	"os"
 
 	"github.com/ukhirani/boilerplate/constants"
+	"github.com/ukhirani/boilerplate/services"
+	"github.com/ukhirani/boilerplate/types"
 	"github.com/ukhirani/boilerplate/utils"
 
 	"github.com/spf13/cobra"
@@ -18,6 +20,8 @@ var (
 	generatedFileDir  string
 )
 
+var config types.Config
+
 func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 
 	// we are assured we only have one arguments
@@ -27,12 +31,22 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	templateExists, templateDir := utils.IsTemplateExists(templateName)
 
 	if !templateExists {
-		fmt.Println("[ERROR] Template not found")
-		fmt.Printf("  Template: %s\n", templateName)
-		fmt.Printf("  Expected location: %s\n", templateDir)
+		fmt.Printf(" [ERROR] Template [ %s ] not found \n", templateName)
+		fmt.Println("  Expected location: \n", templateDir)
 		fmt.Println("  Use 'bp list' to see available templates")
 		os.Exit(1)
 	}
+
+	// read the config for the templateName
+	if err := services.ReadConfig(templateName, &config); err != nil {
+		fmt.Println("[ERROR] Couldn't find the config for :", templateName)
+		os.Exit(1)
+	}
+
+	fmt.Println("Config Found : ", config)
+
+	//Execute PreCmd(s) Here
+	services.ExecCmds(config.PreCmd)
 
 	//copy template in the current directory
 	err := utils.CopyDir(templateDir, constants.CURR_DIR)
@@ -41,8 +55,11 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		fmt.Printf("  Error: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("[SUCCESS] Template %v generated successfully", templateName)
 
+	//Execute PostCmd(s) Here
+	services.ExecCmds(config.PostCmd)
+
+	fmt.Printf("[SUCCESS] Template %v generated successfully", templateName)
 }
 
 // generateCmd represents the generate command
@@ -57,6 +74,7 @@ Usage:
 Examples:
   bp generate react-component
   bp gen my-template`,
+
 	Aliases: []string{"gen", "create"},
 	Run:     GenerateCmdRunner,
 	Args:    cobra.ExactArgs(1),
