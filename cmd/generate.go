@@ -46,7 +46,10 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	fmt.Println("Config Found : ", config)
 
 	//Execute PreCmd(s) Here
-	services.ExecCmds(config.PreCmd)
+	if len(config.PreCmd) > 0 {
+		fmt.Println("Running Pre-Commands . . .  ")
+		services.ExecCmds(config.PreCmd)
+	}
 
 	//copy template in the current directory
 	err := utils.CopyDir(templateDir, constants.CURR_DIR)
@@ -56,10 +59,13 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	fmt.Printf("[SUCCESS] Template %v generated successfully \n", templateName)
 	//Execute PostCmd(s) Here
-	services.ExecCmds(config.PostCmd)
+	if len(config.PostCmd) > 0 {
+		fmt.Println("Running Post-Commands . . .  ")
+		services.ExecCmds(config.PostCmd)
+	}
 
-	fmt.Printf("[SUCCESS] Template %v generated successfully", templateName)
 }
 
 // generateCmd represents the generate command
