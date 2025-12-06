@@ -51,7 +51,7 @@ This function does the following things :
 if yes -> return the concatenated fileName
 else ->   exit
 */
-func currDirValidator(fileName string) string {
+func currDirValidator(fileName string) {
 
 	//get the current directory where you are + fileName
 	currDir := filepath.Join(constants.CURR_DIR, fileName)
@@ -69,37 +69,51 @@ func currDirValidator(fileName string) string {
 		os.Exit(1)
 	}
 
-	return currDir
 }
 
-func destDirValidator(templateName string) string {
+func destDirValidator(templateName string) {
 
 	destDirExists, destDir := utils.IsTemplateExists(templateName)
 
 	// if template exists
 	if destDirExists {
-		fmt.Println("[ERROR] Template already exists")
-		fmt.Printf("  Template: %s\n", templateName)
+		fmt.Printf("[ERROR] Template [%v] already exists", templateName)
 		fmt.Printf("  Location: %s\n", destDir)
 		fmt.Println("  Use a different template name or remove the existing template")
 		os.Exit(1)
 	}
-
-	//return the path where the template needs to be stored
-	return destDir
-
 }
 
-// TODO: as of now this only generates the configs, can be easily refactored to generate template files also
-func GenerateTemplate(newTemplate types.Config) {
+func GenerateTemplate(fileName, templateName string, isDir bool) {
 
-	//TODO: isn't it better to make a map and iterate over it ?
-	viper.SetConfigName(newTemplate.Name)
-	viper.Set("Name", newTemplate.Name)
-	viper.Set("IsDir", newTemplate.IsDir)
+	currDir := filepath.Join(constants.CURR_DIR, fileName)
+	destDir := filepath.Join(constants.BOILERPLATE_TEMPLATE_DIR, templateName)
+
+	//if it's a directory
+	if isDir {
+		if err := utils.CopyDir(currDir, destDir); err != nil {
+			fmt.Printf("[ERROR] Failed to create template [ %s ]", templateName)
+			fmt.Printf("  Error: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		//if not, then it's regular file
+		//since copyDir function copies all the files rather than one
+		if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
+			fmt.Printf("[ERROR] Failed to create template [ %s ]", templateName)
+			fmt.Printf("  Error: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
+	// Setting the Viper Configs
+	viper.SetConfigName(templateName)
+	viper.Set("Name", templateName)
+	viper.Set("IsDir", isDir)
 
 	if err := viper.SafeWriteConfig(); err != nil {
 		fmt.Println(err)
+		// TODO: don't we have to fallback when we can't generate a config
 	}
 
 }
@@ -111,19 +125,18 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 	// validate that whether the template name is valid or not
 	// since we are going to create a directory of that name, it better be a valid directory name
 	if !utils.IsValidDirName(templateName) {
-		fmt.Println("[ERROR] Invalid template name")
-		fmt.Printf("  Template name: %s\n", templateName)
-		fmt.Println("  Allowed characters: letters, numbers, and underscores only")
+		fmt.Println("[ERROR] Invalid template name : ", templateName)
+		fmt.Println(" - Allowed characters: letters, numbers, and underscores only")
 		os.Exit(1)
 	}
 
-	// the logic to check whether the current file exists or not
-	currDir := currDirValidator(fileName)
+	// the logic to check whether the current file exists or not (exits the program if not satisfied)
+	currDirValidator(fileName)
 
-	// the logic to check whether the template can be created or not
-	destDir := destDirValidator(templateName)
+	// the logic to check whether the template can be created or not (exits the program if not satisfied)
+	destDirValidator(templateName)
 
-	//check whether the filetype is direcoty or just file
+	//check whether the filetype is directory or just file
 	isDir, err := utils.IsDirectory(fileName)
 
 	if err != nil {
@@ -132,32 +145,9 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	//TODO: refactor everything below this in this function
+	GenerateTemplate(fileName, templateName, isDir)
 
-	//if it's a directory
-	if isDir {
-		if err := utils.CopyDir(currDir, destDir); err != nil {
-			fmt.Println("[ERROR] Failed to create template directory")
-			fmt.Printf("  Template: %s\n", templateName)
-			fmt.Printf("  Error: %v\n", err)
-			os.Exit(1)
-		}
-	} else {
-		//if not, then it's regular file
-		//since copyDir function copies all the files rather than one
-		if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
-			fmt.Println("[ERROR] Failed to create template file")
-			fmt.Printf("  Template: %s\n", templateName)
-			fmt.Printf("  Error: %v\n", err)
-			os.Exit(1)
-		}
-	}
-
-	newTemplate.Name = templateName
-	newTemplate.IsDir = isDir
-
-	GenerateTemplate(newTemplate)
-	fmt.Printf("[SUCCESS] Template %v created successfully", templateName)
+	fmt.Printf("[SUCCESS] Template [ %v ] created successfully", templateName)
 }
 
 func init() {
