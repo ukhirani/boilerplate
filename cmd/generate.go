@@ -43,11 +43,9 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	fmt.Println("Config Found : ", config)
-
 	//Execute PreCmd(s) Here
 	if len(config.PreCmd) > 0 {
-		fmt.Println("Running Pre-Commands . . .  ")
+		fmt.Printf("\nRunning Pre-Commands . . .  \n")
 		services.ExecCmds(config.PreCmd)
 	}
 
@@ -59,10 +57,10 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("[SUCCESS] Template %v generated successfully \n", templateName)
+	fmt.Printf("\n[SUCCESS] Template %v generated successfully \n\n", templateName)
 	//Execute PostCmd(s) Here
 	if len(config.PostCmd) > 0 {
-		fmt.Println("Running Post-Commands . . .  ")
+		fmt.Printf("Running Post-Commands . . .  \n")
 		services.ExecCmds(config.PostCmd)
 	}
 

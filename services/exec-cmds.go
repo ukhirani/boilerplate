@@ -13,6 +13,9 @@ func ExecCmds(cmds []string) error {
 
 		var cmdName string
 		var cmdArgs []string
+
+		fmt.Println("[EXEC]", v)
+
 		splitCmd := strings.Split(v, " ")
 
 		cmdName = splitCmd[0]
@@ -21,14 +24,14 @@ func ExecCmds(cmds []string) error {
 		}
 
 		cmd := exec.Command(cmdName, cmdArgs...)
-		fmt.Println(cmd)
 
+		//giving the cmd the stdiIn's and Out's
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
 		if err := cmd.Run(); err != nil {
-			fmt.Println(err)
+			fmt.Println(" - [ERR]", err)
 			return err
 		}
 
