@@ -10,9 +10,7 @@ import (
 	"github.com/ukhirani/boilerplate/services"
 )
 
-var (
-	version bool
-)
+var version bool
 
 var rootCmd = &cobra.Command{
 	Use:   "bp",
@@ -24,13 +22,11 @@ as templates and generate them instantly.`,
 }
 
 func RootCmdRunner(cmd *cobra.Command, args []string) {
-
 	// check if the version command is called
 	if version {
 		versionCmd.Run(cmd, args)
 		os.Exit(0)
 	}
-
 }
 
 func Execute() {
@@ -42,7 +38,6 @@ func Execute() {
 }
 
 func init() {
-
 	// --version and -v both wil call the versionCmd
 	rootCmd.Flags().BoolVarP(&version, "version", "v", false, versionCmd.Short)
 }

@@ -8,7 +8,6 @@ import (
 )
 
 func ExecCmds(cmds []string) error {
-
 	for _, v := range cmds {
 
 		var cmdName string
@@ -25,7 +24,7 @@ func ExecCmds(cmds []string) error {
 
 		cmd := exec.Command(cmdName, cmdArgs...)
 
-		//giving the cmd the stdiIn's and Out's
+		// giving the cmd the stdiIn's and Out's
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -39,4 +38,3 @@ func ExecCmds(cmds []string) error {
 
 	return nil
 }
-

@@ -23,11 +23,10 @@ var (
 var config types.Config
 
 func GenerateCmdRunner(cmd *cobra.Command, args []string) {
-
 	// we are assured we only have one arguments
 	templateName := args[0]
 
-	//check whether the template exists or not
+	// check whether the template exists or not
 	templateExists, templateDir := utils.IsTemplateExists(templateName)
 
 	if !templateExists {
@@ -43,13 +42,13 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	//Execute PreCmd(s) Here
+	// Execute PreCmd(s) Here
 	if len(config.PreCmd) > 0 {
 		fmt.Printf("\nRunning Pre-Commands . . .  \n")
 		services.ExecCmds(config.PreCmd)
 	}
 
-	//copy template in the current directory
+	// copy template in the current directory
 	err := utils.CopyDir(templateDir, constants.CURR_DIR)
 	if err != nil {
 		fmt.Println("[ERROR] Failed to copy template : ", templateName)
@@ -58,12 +57,11 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	}
 
 	fmt.Printf("\n[SUCCESS] Template %v generated successfully \n\n", templateName)
-	//Execute PostCmd(s) Here
+	// Execute PostCmd(s) Here
 	if len(config.PostCmd) > 0 {
 		fmt.Printf("Running Post-Commands . . .  \n")
 		services.ExecCmds(config.PostCmd)
 	}
-
 }
 
 // generateCmd represents the generate command
@@ -87,11 +85,11 @@ Examples:
 func init() {
 	rootCmd.AddCommand(generateCmd)
 
-	//defining the flags
-	//TODO: use the --dir and the --name flags
+	// defining the flags
+	// TODO: use the --dir and the --name flags
 	generateCmd.Flags().StringVarP(&generatedFileName, "name", "n", "", "Custom name for the generated file (files only, not directories)")
 	generateCmd.Flags().StringVarP(&generatedFileDir, "dir", "d", "", "Target directory for generation (default: current directory)")
 
-	//making the flags as required
-	//generateCmd.MarkFlagRequired("name")
+	// making the flags as required
+	// generateCmd.MarkFlagRequired("name")
 }

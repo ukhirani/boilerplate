@@ -1,6 +1,4 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
+// Package cmd ...
 package cmd
 
 import (
@@ -15,13 +13,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/ukhirani/boilerplate/types"
 )
 
-var (
-	templateName string
-	newTemplate  types.Config
-)
+var templateName string
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
@@ -54,11 +48,10 @@ if yes -> return the concatenated fileName
 else ->   exit
 */
 func currDirValidator(fileName string) {
-
-	//get the current directory where you are + fileName
+	// get the current directory where you are + fileName
 	currDir := filepath.Join(constants.CURR_DIR, fileName)
 
-	//check if current directory exists
+	// check if current directory exists
 	currDirexists := utils.Exists(currDir)
 
 	// check for any unknown error
@@ -70,11 +63,9 @@ func currDirValidator(fileName string) {
 		fmt.Println("  Make sure the file exists in the current directory")
 		os.Exit(1)
 	}
-
 }
 
 func destDirValidator(templateName string) {
-
 	destDirExists, destDir := utils.IsTemplateExists(templateName)
 
 	// if template exists
@@ -87,11 +78,10 @@ func destDirValidator(templateName string) {
 }
 
 func GenerateTemplate(fileName, templateName string, isDir bool) {
-
 	currDir := filepath.Join(constants.CURR_DIR, fileName)
 	destDir := filepath.Join(constants.BOILERPLATE_TEMPLATE_DIR, templateName)
 
-	//if it's a directory
+	// if it's a directory
 	if isDir {
 		if err := utils.CopyDir(currDir, destDir); err != nil {
 			fmt.Printf("[ERROR] Failed to create template [ %s ]", templateName)
@@ -103,8 +93,8 @@ func GenerateTemplate(fileName, templateName string, isDir bool) {
 			os.Exit(1)
 		}
 	} else {
-		//if not, then it's regular file
-		//since copyDir function copies all the files rather than one
+		// if not, then it's regular file
+		// since copyDir function copies all the files rather than one
 		if err := utils.CopyFile(currDir, destDir, fileName); err != nil {
 			fmt.Printf("[ERROR] Failed to create template [ %s ]", templateName)
 			fmt.Printf("  Error: %v\n", err)
@@ -121,11 +111,10 @@ func GenerateTemplate(fileName, templateName string, isDir bool) {
 		fmt.Println(err)
 		// TODO: don't we have to fallback when we can't generate a config ?
 	}
-
 }
 
 func AddCmdRunner(cmd *cobra.Command, args []string) {
-	//then get the file name entered as the argument
+	// then get the file name entered as the argument
 	fileName := args[0]
 
 	// validate that whether the template name is valid or not
@@ -142,9 +131,8 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 	// the logic to check whether the template can be created or not (exits the program if not satisfied)
 	destDirValidator(templateName)
 
-	//check whether the filetype is directory or just file
+	// check whether the filetype is directory or just file
 	isDir, err := utils.IsDirectory(fileName)
-
 	if err != nil {
 		fmt.Println("[ERROR] Failed to determine file type")
 		fmt.Printf("  Error: %v\n", err)
@@ -159,9 +147,9 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 func init() {
 	rootCmd.AddCommand(addCmd)
 
-	//defining the flags
+	// defining the flags
 	addCmd.Flags().StringVarP(&templateName, "name", "n", "", "Template name (letters, numbers, underscores only)")
 
-	//marking flags as required
+	// marking flags as required
 	addCmd.MarkFlagRequired("name")
 }

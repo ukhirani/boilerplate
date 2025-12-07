@@ -10,20 +10,19 @@ import (
 
 var configPaths = []string{
 	c.BOILERPLATE_CONFIG_DIR,
-	//TODO: add c.USER_CONFIG_DIR here
+	// TODO: add c.UserConfigDir here
 }
 
 func InitViper() {
-
 	viper.SetConfigType("toml")
 
 	for _, path := range configPaths {
-		//creating the config path if not existing
+		// creating the config path if not existing
 		os.MkdirAll(path, os.ModePerm)
 		viper.AddConfigPath(path)
 	}
 
-	//setting all the defaults for the viper
+	// setting all the defaults for the viper
 	for key, value := range types.DefaultConfig {
 		viper.SetDefault(key, value)
 	}

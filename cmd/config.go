@@ -6,9 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	configName string
-)
+var configName string
 
 // configCmd represents the config command
 var configCmd = &cobra.Command{
@@ -25,6 +23,6 @@ func ConifgCmdRunner(cobra *cobra.Command, args []string) {
 func init() {
 	rootCmd.AddCommand(configCmd)
 
-	//declaring the flags
+	// declaring the flags
 	configCmd.Flags().StringVarP(&configName, "name", "n", "", "used to rename your templates")
 }

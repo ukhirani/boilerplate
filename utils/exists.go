@@ -8,7 +8,6 @@ import (
 )
 
 func Exists(path string) bool {
-
 	// check if the path exists
 	_, err := os.Stat(path)
 

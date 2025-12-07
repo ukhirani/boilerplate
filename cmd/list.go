@@ -6,10 +6,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	c "github.com/ukhirani/boilerplate/constants"
-
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -24,13 +23,12 @@ var listCmd = &cobra.Command{
 }
 
 func ListCmdRunner(cmd *cobra.Command, args []string) {
-
 	homeDir, _ := os.UserHomeDir()
 
-	//destDir = homeDir + location where we store templates
+	// destDir = homeDir + location where we store templates
 	templateDir := filepath.Join(homeDir, c.BOILERPLATE_DIR, c.TEMPLATE_DIR)
 
-	//read the templateDir
+	// read the templateDir
 	entries, err := os.ReadDir(templateDir)
 	if err != nil {
 		fmt.Println("[ERROR] Failed to read templates directory")

@@ -8,7 +8,6 @@ import (
 )
 
 func CopyFile(srcDir, destDir, fileName string) error {
-
 	// Open the source file for reading.
 	sourceFile, err := os.Open(srcDir)
 	if err != nil {
@@ -16,7 +15,7 @@ func CopyFile(srcDir, destDir, fileName string) error {
 	}
 	defer sourceFile.Close()
 
-	//create template directory
+	// create template directory
 	err = os.MkdirAll(destDir, os.ModePerm)
 	if err != nil {
 		fmt.Println("[ERROR] Failed to create directory")

@@ -8,7 +8,6 @@ import (
 )
 
 func ReadConfig(templateName string, conf *types.Config) error {
-
 	viper.SetConfigName(templateName)
 	if err := viper.ReadInConfig(); err != nil {
 		// Config file not found
@@ -21,7 +20,7 @@ func ReadConfig(templateName string, conf *types.Config) error {
 		return err
 	}
 
-	//set the config to the things that were found
+	// set the config to the things that were found
 	conf.Name = viper.GetString("Name")
 	conf.IsDir = viper.GetBool("IsDir")
 	conf.PreCmd = viper.GetStringSlice("PreCmd")
@@ -29,4 +28,3 @@ func ReadConfig(templateName string, conf *types.Config) error {
 
 	return nil
 }
-
