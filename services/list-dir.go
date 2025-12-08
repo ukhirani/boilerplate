@@ -5,6 +5,8 @@ import (
 	"os"
 )
 
+// TODO: can't we do a recursive call to nicely print out a tree
+
 func ListDir(path string) (int, error) {
 	entries, err := os.ReadDir(path)
 

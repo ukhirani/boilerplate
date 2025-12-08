@@ -5,8 +5,11 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/services"
 	"github.com/ukhirani/boilerplate/types"
 	"github.com/ukhirani/boilerplate/utils"
@@ -25,10 +28,21 @@ var previewCmd = &cobra.Command{
 
 func PreviewTemplate(templateName string, conf *types.Config) error {
 	fmt.Printf("[ %s ] template preview \n", templateName)
+
+	templateDir := filepath.Join(constants.BOILERPLATE_TEMPLATE_DIR, templateName)
+
+	// then print out the directory as it is
+	if conf.IsDir {
+		if _, err := services.ListDir(templateDir); err != nil {
+			fmt.Println("Error listing template content of ", templateName)
+			fmt.Println("Error : ", err)
+		}
+	}
+
 	return nil
 }
 
-func PreviewConfig(templateName string, conf *types.Config) error {
+func PreviewConfig(templateName string, conf *types.Config) {
 	// determining the file type
 	templateType := "File"
 	if conf.IsDir {
@@ -56,7 +70,6 @@ func PreviewConfig(templateName string, conf *types.Config) error {
 			fmt.Printf(" • POST-CMD %d [ %s ] \n", i+1, v)
 		}
 	}
-	return nil
 }
 
 func PreviewCmdRunner(cmd *cobra.Command, args []string) {
@@ -69,20 +82,19 @@ func PreviewCmdRunner(cmd *cobra.Command, args []string) {
 	if err := services.ReadConfig(templateName, &conf); err != nil {
 		fmt.Println("Error Fetching the config for the template : ", templateName)
 		fmt.Println("[Error] :", err)
+		os.Exit(1)
 	}
 
 	// check whether the template exists
 	if exists, _ := utils.IsTemplateExists(templateName); !exists {
 		fmt.Printf("Template [%s] not found.", templateName)
+		os.Exit(1)
 	}
 
 	// if we want to view the config
 	if previewConfig {
-		err := PreviewConfig(templateName, &conf)
-		if err != nil {
-			fmt.Println(err)
-		}
-		return
+		PreviewConfig(templateName, &conf)
+		os.Exit(0)
 	}
 
 	// else show the exact template if
