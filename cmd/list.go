@@ -6,9 +6,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	c "github.com/ukhirani/boilerplate/constants"
+	"github.com/ukhirani/boilerplate/services"
 
 	"github.com/spf13/cobra"
 )
@@ -22,15 +22,15 @@ var listCmd = &cobra.Command{
 	Run:     ListCmdRunner,
 }
 
+// TODO:: make a seperate service to list out the contents of any provided absolute directory path, then reuse it in this file and the preview template (for directory types)
+
 func ListCmdRunner(cmd *cobra.Command, args []string) {
-	homeDir, _ := os.UserHomeDir()
+	templateDir := c.BOILERPLATE_TEMPLATE_DIR // get the template dir from the constants package
 
-	// destDir = homeDir + location where we store templates
-	templateDir := filepath.Join(homeDir, c.BOILERPLATE_DIR, c.TEMPLATE_DIR)
+	fmt.Println("Available template/s:")
 
-	// read the templateDir
-	entries, err := os.ReadDir(templateDir)
-	if err != nil {
+	numEntries, err := services.ListDir(templateDir) // read the templateDir
+	if err != nil {                                  // catch error while listing directories (if any)
 		fmt.Println("[ERROR] Failed to read templates directory")
 		fmt.Printf("  Location: %s\n", templateDir)
 		fmt.Printf("  Error: %v\n", err)
@@ -38,15 +38,10 @@ func ListCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if len(entries) == 0 {
+	if numEntries == 0 {
 		fmt.Println("No templates found")
 		fmt.Println("  Use 'bp add <file> --name <template-name>' to add your first template")
-		return
-	}
-
-	fmt.Println("Available templates:")
-	for _, entry := range entries {
-		fmt.Printf("  • %s\n", entry.Name())
+		os.Exit(0)
 	}
 }
 
