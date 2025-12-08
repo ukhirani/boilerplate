@@ -151,5 +151,8 @@ func init() {
 	addCmd.Flags().StringVarP(&templateName, "name", "n", "", "Template name (letters, numbers, underscores only)")
 
 	// marking flags as required
-	addCmd.MarkFlagRequired("name")
+	err := addCmd.MarkFlagRequired("name")
+	if err != nil {
+		fmt.Println(err)
+	}
 }
