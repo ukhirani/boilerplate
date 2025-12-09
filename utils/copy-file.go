@@ -28,7 +28,7 @@ func CopyFile(srcDir, destDir, fileName string) error {
 	destDir = filepath.Join(destDir, fileName)
 
 	if isDestExists := Exists(destDir); isDestExists {
-		return fmt.Errorf("File already exists, choose a different destination file ")
+		return fmt.Errorf("file already exists, choose a different destination file ")
 	}
 
 	// Create the destination file for writing.
