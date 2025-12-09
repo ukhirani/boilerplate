@@ -22,18 +22,16 @@ var (
 )
 
 func NameDirValidator(conf *types.Config, cmd *cobra.Command, destDir string) string {
-	fmt.Println(conf)
-
 	if conf.IsDir && cmd.Flags().Changed("name") {
 		fmt.Println("--name flag is only for file type templates")
 		fmt.Printf("[ %s ] is of type Directory", conf.Name)
 		os.Exit(1)
 	}
 
+	// join the dir flag's value and then current directory
 	if cmd.Flags().Changed("dir") {
 		destDir = filepath.Join(destDir, generatedFileDir)
 	}
-
 	return destDir
 }
 
@@ -70,12 +68,34 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	// copy template in the current directory
-	err := utils.CopyDir(templateDir, destDir)
-	if err != nil {
-		fmt.Println("[ERROR] Failed to copy template : ", templateName)
-		fmt.Printf("  Error: %v\n", err)
-		os.Exit(1)
+	if config.IsDir {
+
+		// copy template in the current directory
+		err := utils.CopyDir(templateDir, destDir)
+		if err != nil {
+			fmt.Println("[ERROR] Failed to copy template : ", templateName)
+			fmt.Printf("  Error: %v\n", err)
+			os.Exit(1)
+		}
+
+	} else {
+		templateDirFile, err := utils.GetTemplateFileDir(templateName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		// if --name flag is not used
+		// use the file name that is already there in the template file
+		if !cmd.Flags().Changed("name") {
+			generatedFileName = templateDirFile
+		}
+
+		err = utils.CopyFile(filepath.Join(templateDir, templateDirFile), destDir, generatedFileName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	}
 
 	fmt.Printf("\n[SUCCESS] Template %v generated successfully \n\n", templateName)
