@@ -10,6 +10,7 @@ import (
 
 var configPaths = []string{
 	c.BOILERPLATE_CONFIG_DIR,
+	c.BOILERPLATE_TEMPLATE_DIR,
 	// TODO: add c.UserConfigDir here
 }
 
