@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/services"
@@ -20,15 +21,30 @@ var (
 	generatedFileDir  string
 )
 
-var config types.Config
+func NameDirValidator(conf *types.Config, cmd *cobra.Command, destDir string) string {
+	fmt.Println(conf)
+
+	if conf.IsDir && cmd.Flags().Changed("name") {
+		fmt.Println("--name flag is only for file type templates")
+		fmt.Printf("[ %s ] is of type Directory", conf.Name)
+		os.Exit(1)
+	}
+
+	if cmd.Flags().Changed("dir") {
+		destDir = filepath.Join(destDir, generatedFileDir)
+	}
+
+	return destDir
+}
 
 func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	// we are assured we only have one arguments
 	templateName := args[0]
+	destDir := constants.CURR_DIR
+	var config types.Config
 
 	// check whether the template exists or not
 	templateExists, templateDir := utils.IsTemplateExists(templateName)
-
 	if !templateExists {
 		fmt.Printf(" [ERROR] Template [ %s ] not found \n", templateName)
 		fmt.Println("  Expected location: \n", templateDir)
@@ -42,14 +58,20 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	// validate the --name OR --dir flag if passed
+	destDir = NameDirValidator(&config, cmd, destDir)
+
 	// Execute PreCmd(s) Here
 	if len(config.PreCmd) > 0 {
 		fmt.Printf("\nRunning Pre-Commands . . .  \n")
-		services.ExecCmds(config.PreCmd)
+		if err := services.ExecCmds(config.PreCmd); err != nil {
+			fmt.Println("Error executing Pre-Commands :", err)
+			fmt.Println("The template generation will still carry on . . .")
+		}
 	}
 
 	// copy template in the current directory
-	err := utils.CopyDir(templateDir, constants.CURR_DIR)
+	err := utils.CopyDir(templateDir, destDir)
 	if err != nil {
 		fmt.Println("[ERROR] Failed to copy template : ", templateName)
 		fmt.Printf("  Error: %v\n", err)
@@ -60,7 +82,9 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	// Execute PostCmd(s) Here
 	if len(config.PostCmd) > 0 {
 		fmt.Printf("Running Post-Commands . . .  \n")
-		services.ExecCmds(config.PostCmd)
+		if err := services.ExecCmds(config.PostCmd); err != nil {
+			fmt.Println("Error executing Post-Commands :", err)
+		}
 	}
 }
 
