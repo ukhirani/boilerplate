@@ -1,84 +1,31 @@
 <img width="1100" height="409" alt="image" src="https://github.com/user-attachments/assets/5cf7a26d-aaca-489e-84ec-4b54643c92de" />
 
+Boilerplate is a CLI tool that helps developers eliminate repetitive code by managing reusable file and directory templates. Save common code structures, project scaffolds, and configuration files as templates, then generate them instantly when needed.
+Templates can include pre and post-generation commands to automate setup tasks, making it ideal for quickly bootstrapping projects, components, or any repetitive codes.
 
 ## Installation
-
-Make sure you have Go installed, then run:
 
 ```bash
 go install github.com/ukhirani/boilerplate/bp@latest
 ```
 
-## Quick Start
-
-### List Available Templates
-
-View all templates in your collection:
+## Usage
 
 ```bash
+# List available templates
 bp list
-# or
-bp ls
-```
 
-### Generate from a Template
-
-Create a file or directory from an existing template:
-
-```bash
+# Generate from template
 bp generate <template-name>
-# or use aliases
-bp gen <template-name>
-bp create <template-name>
-```
+bp generate <template-name> --name <custom-name>  # Custom filename (files only)
+bp generate <template-name> --dir <target-dir>    # Specify target directory
 
-This will copy the template to your current directory, preserving its structure.
-
-### Add a New Template
-
-Save a file or directory as a reusable template:
-
-```bash
+# Add new template
 bp add <file-or-directory> --name <template-name>
-# or use short flag
-bp add <file-or-directory> -n <template-name>
+
+# Preview template
+bp preview <template-name>
+bp preview <template-name> --config  # Show template configuration
 ```
 
-The template name must contain only letters, numbers, and underscores. The file or directory will be saved to your templates directory for future use.
-
-### Check Version
-
-Display the current version:
-
-```bash
-bp version
-# or
-bp --version
-bp -v
-```
-
-### Get Help
-
-Show available commands and options:
-
-```bash
-bp --help
-# or
-bp -h
-```
-
-## Usage Examples
-
-```bash
-# List all available templates
-bp list
-
-# Generate a React component template
-bp generate react-component
-
-# Add a file as a new template
-bp add ./my-script.sh --name shell-script
-
-# Add a directory as a template
-bp add ./project-structure --name starter-template
-```
+Templates are stored in `$HOME/boilerplate/templates/`. Use `bp --help` for more options.
