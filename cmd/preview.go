@@ -19,11 +19,12 @@ var previewConfig bool
 
 // previewCmd represents the preview command
 var previewCmd = &cobra.Command{
-	Use:   "preview",
-	Short: "preview the templates with this command",
-	Long:  "preview the templates with this command",
-	Run:   PreviewCmdRunner,
-	Args:  cobra.ExactArgs(1),
+	Use:     "preview",
+	Short:   "preview the templates with this command",
+	Long:    "preview the templates with this command",
+	Run:     PreviewCmdRunner,
+	Args:    cobra.ExactArgs(1),
+	Aliases: []string{"view"},
 }
 
 func PreviewTemplate(templateName string, conf *types.Config) error {
@@ -37,6 +38,21 @@ func PreviewTemplate(templateName string, conf *types.Config) error {
 			fmt.Println("Error listing template content of ", templateName)
 			fmt.Println("Error : ", err)
 		}
+	} else {
+		templateFileName, err := utils.GetTemplateFileDir(templateName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		data, err := os.ReadFile(filepath.Join(templateDir, templateFileName))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		fmt.Println(string(data))
+		return nil
+
 	}
 
 	return nil
