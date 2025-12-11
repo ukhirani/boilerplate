@@ -19,7 +19,7 @@ bp list
 # Generate from template
 bp generate <template-name>
 bp generate <template-name> --name <custom-name>  # Custom filename (files only)
-bp generate <template-name> --dir <relative -target-dir>    # Specify target directory
+bp generate <template-name> --dir <relative-target-dir>    # Specify relative target directory
 
 # Add new template
 bp add <file-or-directory> --name <template-name>
