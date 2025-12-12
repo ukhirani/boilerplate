@@ -19,6 +19,8 @@ var versionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(constants.VERSION)
 	},
+	Args: cobra.ExactArgs(1),
+	// TODO : limit the number of args
 }
 
 func init() {
