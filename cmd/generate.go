@@ -38,7 +38,7 @@ func NameDirValidator(conf *types.Config, cmd *cobra.Command, destDir string) st
 func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	// we are assured we only have one arguments
 	templateName := args[0]
-	destDir := constants.CURR_DIR
+	destDir := constants.CurrDir
 	var config types.Config
 
 	// check whether the template exists or not

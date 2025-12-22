@@ -49,7 +49,7 @@ else ->   exit
 */
 func currDirValidator(fileName string) {
 	// get the current directory where you are + fileName
-	currDir := filepath.Join(constants.CURR_DIR, fileName)
+	currDir := filepath.Join(constants.CurrDir, fileName)
 
 	// check if current directory exists
 	currDirexists := utils.Exists(currDir)
@@ -78,7 +78,7 @@ func destDirValidator(templateName string) {
 }
 
 func GenerateTemplate(fileName, templateName string, isDir bool) {
-	currDir := filepath.Join(constants.CURR_DIR, fileName)
+	currDir := filepath.Join(constants.CurrDir, fileName)
 	destDir := filepath.Join(constants.BOILERPLATE_TEMPLATE_DIR, templateName)
 
 	// if it's a directory

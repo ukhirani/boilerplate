@@ -8,7 +8,7 @@ import (
 var (
 	HOME_DIR, _      = os.UserHomeDir()
 	UserConfigDir, _ = os.UserConfigDir()
-	CURR_DIR, _      = os.Getwd()
+	CurrDir, _      = os.Getwd()
 )
 
 // Boilerplate Constants
