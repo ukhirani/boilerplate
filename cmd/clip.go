@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -24,7 +25,8 @@ func ClipCmdRunner(cmd *cobra.Command, args []string) {
 	templateExists, templateDir := utils.IsTemplateExists(templateName)
 
 	if !templateExists {
-		fmt.Printf("Template [ %s ] doesn't exists ", templateName)
+		fmt.Printf("Template [ %s ] doesn't exist. \n ", templateName)
+		os.Exit(1)
 	}
 
 	templateFileName, err := utils.GetTemplateFileDir(templateName)
