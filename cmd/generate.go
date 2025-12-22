@@ -22,9 +22,9 @@ var (
 )
 
 func NameDirValidator(conf *types.Config, cmd *cobra.Command, destDir string, args []string) string {
-	// incase template is dir type and --name flage is used
+	// incase template is dir type and file name is used
 	if conf.IsDir && len(args) == 2 {
-		fmt.Println("--name flag or file name is only for file type templates")
+		fmt.Println("file name is only for file type templates")
 		fmt.Printf("[ %s ] is of type Directory", conf.Name)
 		os.Exit(1)
 	}
