@@ -21,9 +21,10 @@ var (
 	generatedFileDir  string
 )
 
-func NameDirValidator(conf *types.Config, cmd *cobra.Command, destDir string) string {
-	if conf.IsDir && cmd.Flags().Changed("name") {
-		fmt.Println("--name flag is only for file type templates")
+func NameDirValidator(conf *types.Config, cmd *cobra.Command, destDir string, args []string) string {
+	// incase template is dir type and --name flage is used
+	if conf.IsDir && len(args) == 2 {
+		fmt.Println("--name flag or file name is only for file type templates")
 		fmt.Printf("[ %s ] is of type Directory", conf.Name)
 		os.Exit(1)
 	}
@@ -56,8 +57,8 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	// validate the --name OR --dir flag if passed
-	destDir = NameDirValidator(&config, cmd, destDir)
+	// validate the 2nd arg (as file name) OR --dir flag if passed
+	destDir = NameDirValidator(&config, cmd, destDir, args)
 
 	// Execute PreCmd(s) Here
 	if len(config.PreCmd) > 0 {
@@ -85,10 +86,12 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 			os.Exit(1)
 		}
 
-		// if --name flag is not used
+		// if 2 args are not provided (i.e. no renaming of the existing file in the template directory)
 		// use the file name that is already there in the template file
-		if !cmd.Flags().Changed("name") {
+		if len(args) < 2 {
 			generatedFileName = templateDirFile
+		} else {
+			generatedFileName = args[1]
 		}
 
 		err = utils.CopyFile(filepath.Join(templateDir, templateDirFile), destDir, generatedFileName)
@@ -115,25 +118,20 @@ var generateCmd = &cobra.Command{
 	Long: `Copy a template to the current directory, preserving its structure and content.
 
 Usage:
-  bp generate <template-name> [flags]
+  bp generate <template-name> <generated-file-name> [flags]
 
 Examples:
-  bp generate react-component
+  bp generate react-component index.jsx
   bp gen my-template`,
 
 	Aliases: []string{"gen", "create"},
 	Run:     GenerateCmdRunner,
-	Args:    cobra.ExactArgs(1),
+	Args:    cobra.RangeArgs(1, 2),
 }
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
 
 	// defining the flags
-	// TODO: use the --dir and the --name flags
-	generateCmd.Flags().StringVarP(&generatedFileName, "name", "n", "", "Custom name for the generated file (files only, not directories)")
 	generateCmd.Flags().StringVarP(&generatedFileDir, "dir", "d", "", "Target directory for generation (default: current directory)")
-
-	// making the flags as required
-	// generateCmd.MarkFlagRequired("name")
 }
