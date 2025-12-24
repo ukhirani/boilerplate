@@ -27,6 +27,9 @@ bp add <file-or-directory> --name <template-name>
 # Preview template
 bp preview <template-name>
 bp preview <template-name> --config  # Show template configuration including pre and post commands.
+
+# Copy template to clipboard (file type only)
+bp clip <template-name>
 ```
 
 Templates are stored in `$HOME/boilerplate/templates/`. Use `bp --help` for more options.
