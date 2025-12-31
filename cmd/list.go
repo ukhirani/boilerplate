@@ -29,8 +29,8 @@ func ListCmdRunner(cmd *cobra.Command, args []string) {
 
 	fmt.Println("Available template/s:")
 
-	numEntries, err := services.ListDir(templateDir) // read the templateDir
-	if err != nil {                                  // catch error while listing directories (if any)
+	numEntries, err := services.ListDir(templateDir, true) // read the templateDir
+	if err != nil {                                        // catch error while listing directories (if any)
 		fmt.Println("[ERROR] Failed to read templates directory")
 		fmt.Printf("  Location: %s\n", templateDir)
 		fmt.Printf("  Error: %v\n", err)

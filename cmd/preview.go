@@ -34,7 +34,7 @@ func PreviewTemplate(templateName string, conf *types.Config) error {
 
 	// then print out the directory as it is
 	if conf.IsDir {
-		if _, err := services.ListDir(templateDir); err != nil {
+		if _, err := services.ListDir(templateDir, false); err != nil {
 			fmt.Println("Error listing template content of ", templateName)
 			fmt.Println("Error : ", err)
 		}
