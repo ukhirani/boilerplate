@@ -27,5 +27,7 @@ brews:
       owner: ukhirani
       name: homebrew-bp
 
+    folder: Formula
+
     install: |
       bin.install "bp"
