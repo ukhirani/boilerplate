@@ -69,7 +69,7 @@ func fetchTemplates() ([]types.HubTemplate, error) {
 	return templates, nil
 }
 
-func createViperConfig(template *types.HubTemplate, alias, templateDir, configPath string) {
+func createViperConfig(template *types.HubTemplate, alias, templateDir, configPath string) error {
 	v := viper.New()
 	v.SetConfigType("toml")
 	v.Set("Name", alias)
@@ -83,6 +83,8 @@ func createViperConfig(template *types.HubTemplate, alias, templateDir, configPa
 		os.RemoveAll(templateDir)
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
+
+	return nil
 }
 
 // findTemplate finds a template by username and template name
