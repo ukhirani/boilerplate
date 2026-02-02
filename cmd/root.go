@@ -21,6 +21,7 @@ func Execute() {
 	services.InitViper()
 
 	// THIS is the only version wiring you need
+	rootCmd.SetVersionTemplate(constants.VERSION)
 	rootCmd.Version = constants.VERSION
 
 	if err := fang.Execute(context.Background(), rootCmd); err != nil {
