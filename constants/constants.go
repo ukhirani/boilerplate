@@ -6,4 +6,6 @@ const (
 	CONFIG_DIR      = "configs"
 )
 
+const DEFAULT_EDITOR = "code"
+
 var VERSION = "dev"
