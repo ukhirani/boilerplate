@@ -1,5 +1,4 @@
 name: Release
-
 on:
   push:
     tags:
@@ -22,20 +21,7 @@ jobs:
         with:
           go-version: "1.22"
 
-      - name: Build snapshot (verify version injection)
-        uses: goreleaser/goreleaser-action@v5
-        with:
-          version: latest
-          args: build --snapshot --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-
-      - name: Run bp --version
-        run: |
-          echo "Running built binary:"
-          ./dist/bp_linux_amd64/bp --version
-
-      - name: Release with GoReleaser
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
