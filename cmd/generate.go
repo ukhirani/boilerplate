@@ -113,20 +113,19 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
-	Use:   "generate",
+	Use:   "gen",
 	Short: "Generate a file or directory from a template",
 	Long: `Copy a template to the current directory, preserving its structure and content.
 
-Usage:
-  bp generate <template-name> <generated-file-name> [flags]
+	aliases : generate , create
 
-Examples:
-  bp generate react-component index.jsx
-  bp gen my-template`,
+	`,
 
-	Aliases: []string{"gen", "create"},
+	Aliases: []string{"generate", "create"},
 	Run:     GenerateCmdRunner,
 	Args:    cobra.RangeArgs(1, 2),
+	Example: `bp gen cpp-template main.cpp
+						bp gen react-template --dir project`,
 }
 
 func init() {

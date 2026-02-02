@@ -33,7 +33,7 @@ Examples:
   bp add ./components --name react-components`,
 	Args:    cobra.ExactArgs(1), // This ensures exactly one fileName is passed
 	Run:     AddCmdRunner,
-	Example: "bp add main.go go-starter-template",
+	Example: "bp add <template-file/dir> <template-name>",
 }
 
 /*

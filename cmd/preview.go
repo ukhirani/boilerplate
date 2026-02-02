@@ -52,9 +52,7 @@ func PreviewTemplate(templateName string, conf *types.Config) error {
 
 		fmt.Println(string(data))
 		return nil
-
 	}
-
 	return nil
 }
 
@@ -74,7 +72,7 @@ func PreviewConfig(templateName string, conf *types.Config) {
 
 		// printing out all the preCmds
 		for i, v := range conf.PreCmd {
-			fmt.Printf(" • PRE-CMD %d [ %s ] \n", i+1, v)
+			fmt.Printf(" • [%d/%d] %s \n", i+1, len(conf.PreCmd), v)
 		}
 	}
 
@@ -83,7 +81,7 @@ func PreviewConfig(templateName string, conf *types.Config) {
 
 		// printing out all the postCmds
 		for i, v := range conf.PostCmd {
-			fmt.Printf(" • POST-CMD %d [ %s ] \n", i+1, v)
+			fmt.Printf(" • [%d/%d] %s \n", i+1, len(conf.PostCmd), v)
 		}
 	}
 }

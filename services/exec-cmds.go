@@ -8,12 +8,12 @@ import (
 )
 
 func ExecCmds(cmds []string) error {
-	for _, v := range cmds {
+	for i, v := range cmds {
 
 		var cmdName string
 		var cmdArgs []string
 
-		fmt.Println("[EXEC]", v)
+		fmt.Printf("[%d/%d] %s", i+1, len(cmds), v)
 
 		splitCmd := strings.Split(v, " ")
 

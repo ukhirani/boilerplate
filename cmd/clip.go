@@ -14,11 +14,12 @@ import (
 
 // clipCmd represents the clip command
 var clipCmd = &cobra.Command{
-	Use:   "clip",
-	Short: "add a template to your system clipboard",
-	Long:  "add a template to your system clipboard",
-	Run:   ClipCmdRunner,
-	Args:  cobra.ExactArgs(1),
+	Use:     "clip",
+	Short:   "add a template to your system clipboard",
+	Long:    "add a template to your system clipboard",
+	Run:     ClipCmdRunner,
+	Args:    cobra.ExactArgs(1),
+	Example: "bp clip cpp-template",
 }
 
 func ClipCmdRunner(cmd *cobra.Command, args []string) {

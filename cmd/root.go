@@ -20,7 +20,7 @@ Save common code structures as templates and generate them instantly.`,
 func Execute() {
 	services.InitViper()
 
-	// THIS is the only version wiring you need
+	// overriding fang's versioning
 	rootCmd.SetVersionTemplate(constants.VERSION)
 	rootCmd.Version = constants.VERSION
 

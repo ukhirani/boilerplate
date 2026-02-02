@@ -42,6 +42,8 @@ Examples:
 	Args:    cobra.ExactArgs(1),
 	Run:     CloneCmdRunner,
 	Aliases: []string{"install", "get"},
+	Example: `bp clone ukhirani/cpp-template --alias cpp-starter
+  bp clone ukhirani/react-tailwind -a tailwind-starter`,
 }
 
 // fetchTemplates fetches all templates from the bp-hub API

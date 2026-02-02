@@ -15,9 +15,11 @@ import (
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:     "list",
-	Short:   "List all available templates",
-	Long:    `List all available templates stored in $HOME/boilerplate/templates/`,
+	Use:   "list",
+	Short: "List all available templates",
+	Long: `List all available templates.
+
+	Aliases : ls`,
 	Aliases: []string{"ls"},
 	Run:     ListCmdRunner,
 }
