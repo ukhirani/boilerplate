@@ -1,6 +1,3 @@
-/*
-Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
-*/
 package cmd
 
 import (
@@ -13,37 +10,20 @@ import (
 	"github.com/ukhirani/boilerplate/services"
 )
 
-var version bool
-
 var rootCmd = &cobra.Command{
 	Use:   "bp",
 	Short: "A CLI tool to ironically skip writing boilerplate code",
-	Long: `Manage reusable file and directory templates. Save common code structures 
-as templates and generate them instantly.`,
-
-	Run: RootCmdRunner,
-}
-
-func RootCmdRunner(cmd *cobra.Command, args []string) {
-	// check if the version command is called
-	if version {
-		versionCmd.Run(cmd, args)
-		os.Exit(0)
-	}
+	Long: `Manage reusable file and directory templates.
+Save common code structures as templates and generate them instantly.`,
 }
 
 func Execute() {
 	services.InitViper()
-	// err := rootCmd.Execute()
 
+	// THIS is the only version wiring you need
 	rootCmd.Version = constants.VERSION
 
 	if err := fang.Execute(context.Background(), rootCmd); err != nil {
 		os.Exit(1)
 	}
-}
-
-func init() {
-	// --version and -v both wil call the versionCmd
-	rootCmd.Flags().BoolVarP(&version, "version", "v", false, versionCmd.Short)
 }
