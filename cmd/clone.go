@@ -37,10 +37,11 @@ Usage:
   bp clone <username/template-name> --alias <local-template-name>
 
 Examples:
-  bp clone vue_master/Vue.js 3 SPA --alias vue-spa
-  bp clone john_doe/react-starter -a my-react-template`,
-	Args: cobra.ExactArgs(1),
-	Run:  CloneCmdRunner,
+  bp clone ukhirani/cpp-template --alias cpp-starter
+  bp clone ukhirani/react-tailwind -a tailwind-starter`,
+	Args:    cobra.ExactArgs(1),
+	Run:     CloneCmdRunner,
+	Aliases: []string{"install", "get"},
 }
 
 // fetchTemplates fetches all templates from the bp-hub API
@@ -66,6 +67,22 @@ func fetchTemplates() ([]types.HubTemplate, error) {
 	}
 
 	return templates, nil
+}
+
+func createViperConfig(template *types.HubTemplate, alias, templateDir, configPath string) {
+	v := viper.New()
+	v.SetConfigType("toml")
+	v.Set("Name", alias)
+	v.Set("IsDir", false) // file type template
+	v.Set("PreCmd", template.PreCmds)
+	v.Set("PostCmd", template.PostCmds)
+
+	// Write the config file
+	if err := v.WriteConfigAs(configPath); err != nil {
+		// Cleanup on failure
+		os.RemoveAll(templateDir)
+		return fmt.Errorf("failed to write config file: %w", err)
+	}
 }
 
 // findTemplate finds a template by username and template name
@@ -119,7 +136,7 @@ func createLocalTemplate(template *types.HubTemplate, alias string) error {
 
 	// Create the template file with the code
 	filePath := filepath.Join(templateDir, fileName)
-	if err := os.WriteFile(filePath, []byte(template.Code), 0644); err != nil {
+	if err := os.WriteFile(filePath, []byte(template.Code), 0o644); err != nil {
 		// Cleanup on failure
 		os.RemoveAll(templateDir)
 		return fmt.Errorf("failed to write template file: %w", err)
@@ -128,23 +145,15 @@ func createLocalTemplate(template *types.HubTemplate, alias string) error {
 	// Create the config file using viper
 	configPath := filepath.Join(constants.BOILERPLATE_CONFIG_DIR, alias+".toml")
 
-	// Create a new viper instance for this config
-	v := viper.New()
-	v.SetConfigType("toml")
-	v.Set("Name", alias)
-	v.Set("IsDir", false) // file type template
-	v.Set("PreCmd", template.PreCmds)
-	v.Set("PostCmd", template.PostCmds)
+	// WARN: here isDir is always false as of now for prototyping purposes
 
-	// Write the config file
-	if err := v.WriteConfigAs(configPath); err != nil {
-		// Cleanup on failure
-		os.RemoveAll(templateDir)
-		return fmt.Errorf("failed to write config file: %w", err)
-	}
+	// Create a new viper instance for this config
+	createViperConfig(template, alias, templateDir, configPath)
 
 	return nil
 }
+
+// TODO: add a filename field in the database
 
 // determineFileName attempts to determine an appropriate file name based on the template
 func determineFileName(template *types.HubTemplate) string {
