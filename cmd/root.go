@@ -9,6 +9,7 @@ import (
 
 	"github.com/charmbracelet/fang"
 	"github.com/spf13/cobra"
+	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/services"
 )
 
@@ -34,6 +35,8 @@ func RootCmdRunner(cmd *cobra.Command, args []string) {
 func Execute() {
 	services.InitViper()
 	// err := rootCmd.Execute()
+
+	rootCmd.Version = constants.VERSION
 
 	if err := fang.Execute(context.Background(), rootCmd); err != nil {
 		os.Exit(1)
