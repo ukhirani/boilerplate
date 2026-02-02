@@ -4,8 +4,10 @@ Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
 package cmd
 
 import (
+	"context"
 	"os"
 
+	"github.com/charmbracelet/fang"
 	"github.com/spf13/cobra"
 	"github.com/ukhirani/boilerplate/services"
 )
@@ -31,8 +33,9 @@ func RootCmdRunner(cmd *cobra.Command, args []string) {
 
 func Execute() {
 	services.InitViper()
-	err := rootCmd.Execute()
-	if err != nil {
+	// err := rootCmd.Execute()
+
+	if err := fang.Execute(context.Background(), rootCmd); err != nil {
 		os.Exit(1)
 	}
 }

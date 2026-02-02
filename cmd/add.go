@@ -31,8 +31,9 @@ Usage:
 Examples:
   bp add script.sh --name shell-script
   bp add ./components --name react-components`,
-	Args: cobra.ExactArgs(1), // This ensures exactly one fileName is passed
-	Run:  AddCmdRunner,
+	Args:    cobra.ExactArgs(1), // This ensures exactly one fileName is passed
+	Run:     AddCmdRunner,
+	Example: "bp add main.go go-starter-template",
 }
 
 /*
