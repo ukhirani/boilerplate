@@ -11,6 +11,12 @@ Boilerplate is a CLI tool that lets developers save and reuse file or project te
 brew tap ukhirani/bp
 brew install bp
 ```
+### Linux
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ukhirani/boilerplate/main/install.sh | sh
+```
+
 
 ### If you have go already installed.
 
