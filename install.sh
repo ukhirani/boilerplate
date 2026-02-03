@@ -12,9 +12,12 @@ esac
 
 URL="https://github.com/ukhirani/boilerplate/releases/latest/download/bp_${OS}_${ARCH}.tar.gz"
 
-curl -L "$URL" | tar -xz
+tmpdir=$(mktemp -d)
+curl -L "$URL" | tar -xz -C "$tmpdir"
+sudo mv "$tmpdir/bp" /usr/local/bin/bp
+rm -rf "$tmpdir"
+
 sudo mv bp /usr/local/bin
 hash -r 2>/dev/null || true
-
 
 echo "bp installed successfully . . ."
