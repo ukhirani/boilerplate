@@ -14,5 +14,7 @@ URL="https://github.com/ukhirani/boilerplate/releases/latest/download/bp_${OS}_$
 
 curl -L "$URL" | tar -xz
 sudo mv bp /usr/local/bin
+hash -r 2>/dev/null || true
+
 
 echo "bp installed successfully . . ."
