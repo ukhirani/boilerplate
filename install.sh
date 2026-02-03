@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+echo "hello"
+
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
 
