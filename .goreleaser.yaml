@@ -9,6 +9,7 @@ builds:
     goos:
       - darwin
       - linux
+      - windows
     goarch:
       - amd64
       - arm64
@@ -19,6 +20,9 @@ builds:
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
     format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
 
 brews:
   - name: bp
@@ -34,3 +38,18 @@ brews:
 
     install: |
       bin.install "bp"
+
+winget:
+  - name: bp
+    publisher: ukhirani
+    publisher_url: https://github.com/ukhirani
+    publisher_support_url: https://github.com/ukhirani/boilerplate/issues
+    package_identifier: Ukhirani.Bp
+    homepage: https://github.com/ukhirani/boilerplate
+    short_description: Skip writing repetitive boilerplate code
+    license: MIT
+    license_url: https://github.com/ukhirani/boilerplate/blob/main/LICENSE
+    repository:
+      owner: ukhirani
+      name: winget-pkgs
+      branch: master
