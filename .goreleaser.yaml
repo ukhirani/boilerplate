@@ -40,8 +40,8 @@ brews:
       bin.install "bp"
 
 winget:
-  - name: bp
-    publisher: ukhirani
+  - name: Bp
+    publisher: Ukhirani
     publisher_url: https://github.com/ukhirani
     publisher_support_url: https://github.com/ukhirani/boilerplate/issues
     package_identifier: Ukhirani.Bp
