@@ -46,6 +46,8 @@ bp preview <template> --config  # Show template configuration including pre and 
 
 # Configure a template
 bp config <template> # This will open up the config of the template your the default editor (default : vscode)
+bp config <template> -e OR --editor <editor-name> # This is to override the default editor for opening configs
+
 
 # Copy template to clipboard (file type only)
 bp clip <template>
