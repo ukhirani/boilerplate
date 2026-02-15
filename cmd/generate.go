@@ -4,12 +4,12 @@ Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/services"
+	"github.com/ukhirani/boilerplate/styles"
 	"github.com/ukhirani/boilerplate/types"
 	"github.com/ukhirani/boilerplate/utils"
 
@@ -24,8 +24,10 @@ var (
 func NameDirValidator(conf *types.Config, cmd *cobra.Command, destDir string, args []string) string {
 	// incase template is dir type and file name is used
 	if conf.IsDir && len(args) == 2 {
-		fmt.Println("file name is only for file type templates")
-		fmt.Printf("[ %s ] is of type Directory", conf.Name)
+		styles.PrintErrorWithDetails(
+			"File name argument is only for file-type templates",
+			styles.Highlight(conf.Name)+" is of type Directory",
+		)
 		os.Exit(1)
 	}
 
@@ -45,15 +47,17 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	// check whether the template exists or not
 	templateExists, templateDir := utils.IsTemplateExists(templateName)
 	if !templateExists {
-		fmt.Printf(" [ERROR] Template [ %s ] not found \n", templateName)
-		fmt.Println("  Expected location: \n", templateDir)
-		fmt.Println("  Use 'bp list' to see available templates")
+		styles.PrintErrorWithDetails(
+			"Template "+styles.Highlight(templateName)+" not found",
+			"Expected: "+styles.Path(templateDir),
+			"Run "+styles.Code("bp list")+" to see available templates",
+		)
 		os.Exit(1)
 	}
 
 	// read the config for the templateName
 	if err := services.ReadConfig(templateName, &config); err != nil {
-		fmt.Println("[ERROR] Couldn't find the config for :", templateName)
+		styles.PrintError("Couldn't find the config for " + styles.Highlight(templateName))
 		os.Exit(1)
 	}
 
@@ -62,10 +66,11 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 
 	// Execute PreCmd(s) Here
 	if len(config.PreCmd) > 0 {
-		fmt.Printf("\nRunning Pre-Commands . . .  \n")
+		styles.PrintNewLine()
+		styles.PrintHeader("Running Pre-Commands")
 		if err := services.ExecCmds(config.PreCmd); err != nil {
-			fmt.Println("Error executing Pre-Commands :", err)
-			fmt.Println("The template generation will still carry on . . .")
+			styles.PrintWarning("Pre-command failed: " + err.Error())
+			styles.PrintMuted("Template generation will continue...")
 		}
 	}
 
@@ -74,15 +79,17 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 		// copy template in the current directory
 		err := utils.CopyDir(templateDir, destDir)
 		if err != nil {
-			fmt.Println("[ERROR] Failed to copy template : ", templateName)
-			fmt.Printf("  Error: %v\n", err)
+			styles.PrintErrorWithDetails(
+				"Failed to copy template "+styles.Highlight(templateName),
+				err.Error(),
+			)
 			os.Exit(1)
 		}
 
 	} else {
 		templateDirFile, err := utils.GetTemplateFileDir(templateName)
 		if err != nil {
-			fmt.Println(err)
+			styles.PrintError(err.Error())
 			os.Exit(1)
 		}
 
@@ -96,19 +103,23 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 
 		err = utils.CopyFile(filepath.Join(templateDir, templateDirFile), destDir, generatedFileName)
 		if err != nil {
-			fmt.Println(err)
+			styles.PrintError(err.Error())
 			os.Exit(1)
 		}
 	}
 
-	fmt.Printf("\n[SUCCESS] Template %v generated successfully \n\n", templateName)
+	styles.PrintNewLine()
+	styles.PrintSuccess("Template " + styles.Highlight(templateName) + " generated successfully")
+
 	// Execute PostCmd(s) Here
 	if len(config.PostCmd) > 0 {
-		fmt.Printf("Running Post-Commands . . .  \n")
+		styles.PrintNewLine()
+		styles.PrintHeader("Running Post-Commands")
 		if err := services.ExecCmds(config.PostCmd); err != nil {
-			fmt.Println("Error executing Post-Commands :", err)
+			styles.PrintWarning("Post-command failed: " + err.Error())
 		}
 	}
+	styles.PrintNewLine()
 }
 
 // generateCmd represents the generate command

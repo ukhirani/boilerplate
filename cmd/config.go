@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/services"
+	"github.com/ukhirani/boilerplate/styles"
 	"github.com/ukhirani/boilerplate/utils"
 )
 
@@ -39,7 +40,7 @@ func ConifgCmdRunner(cmd *cobra.Command, args []string) error {
 
 	// check if template exists
 	if ok, _ := utils.IsTemplateExists(templateName); !ok {
-		fmt.Printf("Template %v doesn't exist", templateName)
+		styles.PrintError("Template " + styles.Highlight(templateName) + " doesn't exist")
 		os.Exit(1)
 	}
 
@@ -47,7 +48,7 @@ func ConifgCmdRunner(cmd *cobra.Command, args []string) error {
 
 	cmdToOpenEditor := strings.Join([]string{editorOfChoice, templateConfigLocation}, " ")
 	if err := services.ExecCmds([]string{cmdToOpenEditor}); err != nil {
-		fmt.Println("Error opening config", err)
+		styles.PrintError("Error opening config: " + err.Error())
 		os.Exit(1)
 	}
 

@@ -4,9 +4,8 @@ Copyright © 2025 Umang Hirani umanghirani.exe@gmail.com
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/ukhirani/boilerplate/constants"
+	"github.com/ukhirani/boilerplate/styles"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +16,7 @@ var versionCmd = &cobra.Command{
 	Short: "Display the current version of the application",
 	Long:  `Display the current version number. Equivalent to using --version or -v flags.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(constants.VERSION)
+		styles.PrintKeyValueInline("bp", constants.VERSION)
 	},
 	Args: cobra.ExactArgs(0),
 }

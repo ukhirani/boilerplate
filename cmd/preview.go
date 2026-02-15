@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/ukhirani/boilerplate/constants"
 	"github.com/ukhirani/boilerplate/services"
+	"github.com/ukhirani/boilerplate/styles"
 	"github.com/ukhirani/boilerplate/types"
 	"github.com/ukhirani/boilerplate/utils"
 )
@@ -28,25 +29,27 @@ var previewCmd = &cobra.Command{
 }
 
 func PreviewTemplate(templateName string, conf *types.Config) error {
-	fmt.Printf("[ %s ] template preview \n", templateName)
+	styles.PrintHeader("Template: " + styles.Highlight(templateName))
 
 	templateDir := filepath.Join(constants.BOILERPLATE_TEMPLATE_DIR, templateName)
 
 	// then print out the directory as it is
 	if conf.IsDir {
 		if _, err := services.ListDir(templateDir, false); err != nil {
-			fmt.Println("Error listing template content of ", templateName)
-			fmt.Println("Error : ", err)
+			styles.PrintErrorWithDetails(
+				"Error listing template content",
+				err.Error(),
+			)
 		}
 	} else {
 		templateFileName, err := utils.GetTemplateFileDir(templateName)
 		if err != nil {
-			fmt.Println(err)
+			styles.PrintError(err.Error())
 			os.Exit(1)
 		}
 		data, err := os.ReadFile(filepath.Join(templateDir, templateFileName))
 		if err != nil {
-			fmt.Println(err)
+			styles.PrintError(err.Error())
 			os.Exit(1)
 		}
 
@@ -62,26 +65,28 @@ func PreviewConfig(templateName string, conf *types.Config) {
 	if conf.IsDir {
 		templateType = "Directory"
 	}
-	fmt.Printf("[ %s ] config preview \n", templateName)
+	styles.PrintHeader("Config: " + styles.Highlight(templateName))
 
-	fmt.Println("Template Name :", conf.Name)
-	fmt.Println("Template type :", templateType)
+	styles.PrintKeyValue("Template Name", conf.Name)
+	styles.PrintKeyValue("Template Type", templateType)
 
 	if len(conf.PreCmd) > 0 {
-		fmt.Printf("\nHere are the pre-commands \n")
+		styles.PrintNewLine()
+		styles.PrintSubHeader("Pre-commands")
 
 		// printing out all the preCmds
 		for i, v := range conf.PreCmd {
-			fmt.Printf(" • [%d/%d] %s \n", i+1, len(conf.PreCmd), v)
+			styles.PrintStep(i+1, len(conf.PreCmd), v)
 		}
 	}
 
 	if len(conf.PostCmd) > 0 {
-		fmt.Printf("\nHere are the post-commands \n")
+		styles.PrintNewLine()
+		styles.PrintSubHeader("Post-commands")
 
 		// printing out all the postCmds
 		for i, v := range conf.PostCmd {
-			fmt.Printf(" • [%d/%d] %s \n", i+1, len(conf.PostCmd), v)
+			styles.PrintStep(i+1, len(conf.PostCmd), v)
 		}
 	}
 }
@@ -94,14 +99,16 @@ func PreviewCmdRunner(cmd *cobra.Command, args []string) {
 	var conf types.Config
 
 	if err := services.ReadConfig(templateName, &conf); err != nil {
-		fmt.Println("Error Fetching the config for the template : ", templateName)
-		fmt.Println("[Error] :", err)
+		styles.PrintErrorWithDetails(
+			"Error fetching the config for template: "+styles.Highlight(templateName),
+			err.Error(),
+		)
 		os.Exit(1)
 	}
 
 	// check whether the template exists
 	if exists, _ := utils.IsTemplateExists(templateName); !exists {
-		fmt.Printf("Template [%s] not found.", templateName)
+		styles.PrintError("Template " + styles.Highlight(templateName) + " not found")
 		os.Exit(1)
 	}
 
@@ -114,7 +121,7 @@ func PreviewCmdRunner(cmd *cobra.Command, args []string) {
 	// else show the exact template if
 	err := PreviewTemplate(templateName, &conf)
 	if err != nil {
-		fmt.Println(err)
+		styles.PrintError(err.Error())
 	}
 }
 

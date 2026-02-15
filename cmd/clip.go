@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 	"github.com/ukhirani/boilerplate/services"
+	"github.com/ukhirani/boilerplate/styles"
 	"github.com/ukhirani/boilerplate/types"
 	"github.com/ukhirani/boilerplate/utils"
 )
@@ -31,27 +31,30 @@ func ClipCmdRunner(cmd *cobra.Command, args []string) {
 
 	// quit if template doesn't exist
 	if !templateExists {
-		fmt.Printf("Template [ %s ] doesn't exist. \n ", templateName)
+		styles.PrintError("Template " + styles.Highlight(templateName) + " doesn't exist")
 		os.Exit(1)
 	}
 
 	// read the config
 	var conf types.Config
 	if err := services.ReadConfig(templateName, &conf); err != nil {
-		fmt.Printf("Error reading config : %s .", err)
+		styles.PrintError("Error reading config: " + err.Error())
 		os.Exit(1)
 	}
 
 	// quit if template is type dir
 	if conf.IsDir {
-		fmt.Printf("Template [ %s ] is of type directory and can't be copied  \n ", templateName)
+		styles.PrintErrorWithDetails(
+			"Template "+styles.Highlight(templateName)+" is a directory",
+			"Directory templates cannot be copied to clipboard",
+		)
 		os.Exit(1)
 	}
 
 	// get the exact template file name, then to read the content inside it
 	templateFileName, err := utils.GetTemplateFileDir(templateName)
 	if err != nil {
-		fmt.Println(err)
+		styles.PrintError(err.Error())
 		os.Exit(1)
 	}
 
@@ -61,15 +64,17 @@ func ClipCmdRunner(cmd *cobra.Command, args []string) {
 	// read the file content
 	data, err := os.ReadFile(templateDir)
 	if err != nil {
-		fmt.Println(err)
+		styles.PrintError(err.Error())
 		os.Exit(1)
 	}
 
 	// write to clipboard and exit if errors
 	if err = clipboard.WriteAll(string(data)); err != nil {
-		fmt.Println("error writing to clipboard :", err)
+		styles.PrintError("Error writing to clipboard: " + err.Error())
 		os.Exit(1)
 	}
+
+	styles.PrintSuccess("Template " + styles.Highlight(templateName) + " copied to clipboard")
 }
 
 func init() {

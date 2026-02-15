@@ -1,10 +1,11 @@
 package services
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/ukhirani/boilerplate/styles"
 )
 
 func ExecCmds(cmds []string) error {
@@ -13,7 +14,7 @@ func ExecCmds(cmds []string) error {
 		var cmdName string
 		var cmdArgs []string
 
-		fmt.Printf("[%d/%d] %s", i+1, len(cmds), v)
+		styles.PrintStep(i+1, len(cmds), styles.CommandStyle().Render(v))
 
 		splitCmd := strings.Split(v, " ")
 
@@ -30,7 +31,7 @@ func ExecCmds(cmds []string) error {
 		cmd.Stderr = os.Stderr
 
 		if err := cmd.Run(); err != nil {
-			fmt.Println(" - [ERR]", err)
+			styles.PrintError(err.Error())
 			return err
 		}
 

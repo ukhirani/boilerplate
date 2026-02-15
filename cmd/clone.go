@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/ukhirani/boilerplate/constants"
+	"github.com/ukhirani/boilerplate/styles"
 	"github.com/ukhirani/boilerplate/types"
 	"github.com/ukhirani/boilerplate/utils"
 )
@@ -214,69 +215,79 @@ func CloneCmdRunner(cmd *cobra.Command, args []string) {
 	// Parse the username/template-name argument
 	username, templateName, err := parseTemplateArg(args[0])
 	if err != nil {
-		fmt.Printf("[ERROR] %v\n", err)
-		fmt.Println("  Usage: bp clone <username/template-name> --alias <local-name>")
+		styles.PrintErrorWithDetails(
+			err.Error(),
+			"Usage: "+styles.Code("bp clone <username/template-name> --alias <local-name>"),
+		)
 		os.Exit(1)
 	}
 
 	// Validate the alias name
 	if !utils.IsValidDirName(aliasName) {
-		fmt.Println("[ERROR] Invalid alias name:", aliasName)
-		fmt.Println("  Allowed characters: letters, numbers, and underscores only")
+		styles.PrintErrorWithDetails(
+			"Invalid alias name: "+styles.Highlight(aliasName),
+			"Allowed characters: letters, numbers, and underscores only",
+		)
 		os.Exit(1)
 	}
 
 	// Check if template with alias already exists
 	if exists, _ := utils.IsTemplateExists(aliasName); exists {
-		fmt.Printf("[ERROR] Template with alias '%s' already exists\n", aliasName)
-		fmt.Println("  Use a different alias name or remove the existing template")
+		styles.PrintErrorWithDetails(
+			"Template with alias "+styles.Highlight(aliasName)+" already exists",
+			"Use a different alias name or remove the existing template",
+		)
 		os.Exit(1)
 	}
 
-	fmt.Printf("Fetching templates from bp-hub...\n")
+	styles.PrintRunning("Fetching templates from bp-hub...")
 
 	// Fetch templates from the hub
 	templates, err := fetchTemplates()
 	if err != nil {
-		fmt.Printf("[ERROR] %v\n", err)
-		fmt.Println("  Please check your internet connection and try again")
+		styles.PrintErrorWithDetails(
+			err.Error(),
+			"Please check your internet connection and try again",
+		)
 		os.Exit(1)
 	}
 
 	// Find the requested template
 	template := findTemplate(templates, username, templateName)
 	if template == nil {
-		fmt.Printf("[ERROR] Template '%s/%s' not found in bp-hub\n", username, templateName)
-		fmt.Println("  Make sure the username and template name are correct")
+		styles.PrintErrorWithDetails(
+			"Template "+styles.Highlight(username+"/"+templateName)+" not found in bp-hub",
+			"Make sure the username and template name are correct",
+		)
 		os.Exit(1)
 	}
 
-	fmt.Printf("Found template: %s by %s\n", template.TemplateName, template.Username)
-	fmt.Printf("  Description: %s\n", template.Description)
-	fmt.Printf("  Stars: %d | Clones: %d\n", template.Stars, template.Clones)
+	styles.PrintNewLine()
+	styles.PrintInfo("Found: " + styles.Highlight(template.TemplateName) + " by " + styles.Dim(template.Username))
+	styles.PrintKeyValue("Description", template.Description)
+	styles.PrintKeyValue("Stats", fmt.Sprintf("%d stars • %d clones", template.Stars, template.Clones))
 
 	// Create the local template
 	if err := createLocalTemplate(template, aliasName); err != nil {
-		fmt.Printf("[ERROR] Failed to create local template: %v\n", err)
+		styles.PrintError("Failed to create local template: " + err.Error())
 		os.Exit(1)
 	}
 
-	fmt.Printf("\n[SUCCESS] Template cloned successfully!\n")
-	fmt.Printf("  Local name: %s\n", aliasName)
-	fmt.Printf("  Use 'bp generate %s' to use this template\n", aliasName)
+	styles.PrintNewLine()
+	styles.PrintSuccess("Template cloned successfully!")
+	styles.PrintKeyValue("Local name", aliasName)
+	styles.PrintInfo("Run " + styles.Code("bp gen "+aliasName) + " to use this template")
 
 	// Show pre/post commands if any
 	if len(template.PreCmds) > 0 {
-		fmt.Printf("\n  Pre-commands configured:\n")
-		for _, cmd := range template.PreCmds {
-			fmt.Printf("    - %s\n", cmd)
-		}
+		styles.PrintNewLine()
+		styles.PrintSubHeader("Pre-commands configured")
+		styles.PrintList(template.PreCmds)
 	}
 	if len(template.PostCmds) > 0 {
-		fmt.Printf("\n  Post-commands configured:\n")
-		for _, cmd := range template.PostCmds {
-			fmt.Printf("    - %s\n", cmd)
-		}
+		styles.PrintNewLine()
+		styles.PrintSubHeader("Post-commands configured")
+		styles.PrintList(template.PostCmds)
 	}
 }
 
@@ -288,6 +299,6 @@ func init() {
 
 	// Mark the alias flag as required
 	if err := cloneCmd.MarkFlagRequired("alias"); err != nil {
-		fmt.Println(err)
+		styles.PrintError(err.Error())
 	}
 }
