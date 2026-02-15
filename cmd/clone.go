@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	degit "github.com/qiushiyan/degit/pkg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/ukhirani/boilerplate/constants"
@@ -71,11 +72,11 @@ func fetchTemplates() ([]types.HubTemplate, error) {
 	return templates, nil
 }
 
-func createViperConfig(template *types.HubTemplate, alias, templateDir, configPath string) error {
+func createViperConfig(template *types.HubTemplate, alias, templateDir, configPath string, isDir bool) error {
 	v := viper.New()
 	v.SetConfigType("toml")
 	v.Set("Name", alias)
-	v.Set("IsDir", false) // file type template
+	v.Set("IsDir", isDir)
 	v.Set("PreCmd", template.PreCmds)
 	v.Set("PostCmd", template.PostCmds)
 
@@ -87,6 +88,10 @@ func createViperConfig(template *types.HubTemplate, alias, templateDir, configPa
 	}
 
 	return nil
+}
+
+func isDirType(template *types.HubTemplate) bool {
+	return strings.EqualFold(template.Type, "dir")
 }
 
 // findTemplate finds a template by username and template name
@@ -124,26 +129,43 @@ func parseTemplateArg(arg string) (username, templateName string, err error) {
 func createLocalTemplate(template *types.HubTemplate, alias string) error {
 	// Create the template directory
 	templateDir := filepath.Join(constants.BOILERPLATE_TEMPLATE_DIR, alias)
+	isDir := isDirType(template)
 
 	// Check if template already exists
 	if utils.Exists(templateDir) {
 		return fmt.Errorf("template with alias '%s' already exists", alias)
 	}
 
-	// Create the template directory
-	if err := os.MkdirAll(templateDir, os.ModePerm); err != nil {
-		return fmt.Errorf("failed to create template directory: %w", err)
-	}
+	if isDir {
+		tempDir, err := os.MkdirTemp("", "bp-template-*")
+		if err != nil {
+			return fmt.Errorf("failed to create temp directory: %w", err)
+		}
+		defer os.RemoveAll(tempDir)
 
-	// Determine the file extension based on the code content or template type
-	fileName := determineFileName(template)
+		if err := degit.Clone(template.GithubRepoLink, tempDir, true, false); err != nil {
+			return fmt.Errorf("failed to clone repository: %w", err)
+		}
 
-	// Create the template file with the code
-	filePath := filepath.Join(templateDir, fileName)
-	if err := os.WriteFile(filePath, []byte(template.Code), 0o644); err != nil {
-		// Cleanup on failure
-		os.RemoveAll(templateDir)
-		return fmt.Errorf("failed to write template file: %w", err)
+		if err := utils.CopyDir(tempDir, templateDir); err != nil {
+			return fmt.Errorf("failed to copy repository contents: %w", err)
+		}
+	} else {
+		// Create the template directory
+		if err := os.MkdirAll(templateDir, os.ModePerm); err != nil {
+			return fmt.Errorf("failed to create template directory: %w", err)
+		}
+
+		// Determine the file extension based on the code content or template type
+		fileName := determineFileName(template)
+
+		// Create the template file with the code
+		filePath := filepath.Join(templateDir, fileName)
+		if err := os.WriteFile(filePath, []byte(template.Code), 0o644); err != nil {
+			// Cleanup on failure
+			os.RemoveAll(templateDir)
+			return fmt.Errorf("failed to write template file: %w", err)
+		}
 	}
 
 	// Create the config file using viper
@@ -152,7 +174,7 @@ func createLocalTemplate(template *types.HubTemplate, alias string) error {
 	// WARN: here isDir is always false as of now for prototyping purposes
 
 	// Create a new viper instance for this config
-	createViperConfig(template, alias, templateDir, configPath)
+	createViperConfig(template, alias, templateDir, configPath, isDir)
 
 	return nil
 }
