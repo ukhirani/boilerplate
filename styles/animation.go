@@ -44,7 +44,7 @@ func (s *Spinner) run() {
 		case <-ticker.C:
 			glyph := InfoStyle().Render(CuteSpinnerFrames[frame%len(CuteSpinnerFrames)])
 			msg := MutedStyle().Render(s.message)
-			fmt.Printf("\r%s %s", glyph, msg)
+			fmt.Printf("\r\033[K%s %s", glyph, msg)
 			frame++
 		}
 	}
@@ -59,10 +59,10 @@ func (s *Spinner) Stop() {
 // PlaySuccessAnimation shows a short success pulse and prints a success line.
 func PlaySuccessAnimation(message string) {
 	for _, frame := range SuccessFrames {
-		fmt.Printf("\r%s %s", SuccessStyle().Render(frame), message)
+		fmt.Printf("\r\033[K%s %s", SuccessStyle().Render(frame), message)
 		time.Sleep(70 * time.Millisecond)
 	}
 
 	symbol := SuccessStyle().Render(SuccessSymbol)
-	fmt.Printf("\r%s %s\n", symbol, message)
+	fmt.Printf("\r\033[K%s %s\n", symbol, message)
 }

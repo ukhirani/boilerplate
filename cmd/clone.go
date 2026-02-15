@@ -266,8 +266,8 @@ func CloneCmdRunner(cmd *cobra.Command, args []string) {
 
 	styles.PrintNewLine()
 	styles.PrintInfo("Found: " + styles.Highlight(template.TemplateName) + " by " + styles.Dim(template.Username))
-	styles.PrintKeyValue("Description", template.Description)
-	styles.PrintKeyValue("Stats", fmt.Sprintf("%d stars • %d clones", template.Stars, template.Clones))
+	// styles.PrintKeyValue("Description", template.Description)
+	// styles.PrintKeyValue("Stats", fmt.Sprintf("%d stars • %d clones", template.Stars, template.Clones))
 
 	// Create the local template
 	if err := createLocalTemplate(template, aliasName); err != nil {
@@ -278,6 +278,7 @@ func CloneCmdRunner(cmd *cobra.Command, args []string) {
 	styles.PrintNewLine()
 	styles.PrintSuccessAnimated("Template cloned successfully!")
 	styles.PrintKeyValue("Local name", aliasName)
+	styles.PrintNewLine()
 	styles.PrintInfo("Run " + styles.Code("bp gen "+aliasName) + " to use this template")
 
 	// Show pre/post commands if any
