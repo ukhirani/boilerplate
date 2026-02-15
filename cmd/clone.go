@@ -137,18 +137,8 @@ func createLocalTemplate(template *types.HubTemplate, alias string) error {
 	}
 
 	if isDir {
-		tempDir, err := os.MkdirTemp("", "bp-template-*")
-		if err != nil {
-			return fmt.Errorf("failed to create temp directory: %w", err)
-		}
-		defer os.RemoveAll(tempDir)
-
-		if err := degit.Clone(template.GithubRepoLink, tempDir, true, false); err != nil {
+		if err := degit.Clone(template.GithubRepoLink, templateDir, false, false); err != nil {
 			return fmt.Errorf("failed to clone repository: %w", err)
-		}
-
-		if err := utils.CopyDir(tempDir, templateDir); err != nil {
-			return fmt.Errorf("failed to copy repository contents: %w", err)
 		}
 	} else {
 		// Create the template directory
