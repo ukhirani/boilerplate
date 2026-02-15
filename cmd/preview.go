@@ -52,8 +52,14 @@ func PreviewTemplate(templateName string, conf *types.Config) error {
 			styles.PrintError(err.Error())
 			os.Exit(1)
 		}
+		highlighted, err := styles.HighlightCode(string(data), templateFileName)
+		if err != nil {
+			styles.PrintWarning("Syntax highlighting failed: " + err.Error())
+			fmt.Println(string(data))
+			return nil
+		}
 
-		fmt.Println(string(data))
+		fmt.Print(highlighted)
 		return nil
 	}
 	return nil
