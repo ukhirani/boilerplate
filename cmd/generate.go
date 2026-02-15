@@ -109,7 +109,7 @@ func GenerateCmdRunner(cmd *cobra.Command, args []string) {
 	}
 
 	styles.PrintNewLine()
-	styles.PrintSuccess("Template " + styles.Highlight(templateName) + " generated successfully")
+	styles.PrintSuccessAnimated("Template " + styles.Highlight(templateName) + " generated successfully")
 
 	// Execute PostCmd(s) Here
 	if len(config.PostCmd) > 0 {

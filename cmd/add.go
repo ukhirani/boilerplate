@@ -154,7 +154,7 @@ func AddCmdRunner(cmd *cobra.Command, args []string) {
 
 	GenerateTemplate(fileName, templateName, isDir)
 
-	styles.PrintSuccess("Template " + styles.Highlight(templateName) + " created successfully")
+	styles.PrintSuccessAnimated("Template " + styles.Highlight(templateName) + " created successfully")
 }
 
 func init() {

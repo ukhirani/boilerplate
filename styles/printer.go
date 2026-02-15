@@ -13,6 +13,11 @@ func PrintSuccess(message string) {
 	fmt.Printf("%s %s\n", symbol, message)
 }
 
+// PrintSuccessAnimated prints a short success animation before the final line.
+func PrintSuccessAnimated(message string) {
+	PlaySuccessAnimation(message)
+}
+
 // PrintError prints an error message with the error symbol
 func PrintError(message string) {
 	symbol := ErrorStyle().Render(ErrorSymbol)

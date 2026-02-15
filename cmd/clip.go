@@ -74,7 +74,7 @@ func ClipCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	styles.PrintSuccess("Template " + styles.Highlight(templateName) + " copied to clipboard")
+	styles.PrintSuccessAnimated("Template " + styles.Highlight(templateName) + " copied to clipboard")
 }
 
 func init() {

@@ -240,17 +240,19 @@ func CloneCmdRunner(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	styles.PrintRunning("Fetching templates from bp-hub...")
+	spinner := styles.StartSpinner("Fetching templates from bp-hub...")
 
 	// Fetch templates from the hub
 	templates, err := fetchTemplates()
 	if err != nil {
+		spinner.Stop()
 		styles.PrintErrorWithDetails(
 			err.Error(),
 			"Please check your internet connection and try again",
 		)
 		os.Exit(1)
 	}
+	spinner.Stop()
 
 	// Find the requested template
 	template := findTemplate(templates, username, templateName)
@@ -274,7 +276,7 @@ func CloneCmdRunner(cmd *cobra.Command, args []string) {
 	}
 
 	styles.PrintNewLine()
-	styles.PrintSuccess("Template cloned successfully!")
+	styles.PrintSuccessAnimated("Template cloned successfully!")
 	styles.PrintKeyValue("Local name", aliasName)
 	styles.PrintInfo("Run " + styles.Code("bp gen "+aliasName) + " to use this template")
 
