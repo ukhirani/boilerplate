@@ -23,14 +23,7 @@ var addCmd = &cobra.Command{
 	Short: "Add a file or directory as a reusable template",
 	Long: `Save a file or directory from the current location as a reusable template.
 
-Template names must contain only letters, numbers, and underscores.
-
-Usage:
-  bp add <file-or-directory> --name <template-name>
-
-Examples:
-  bp add script.sh --name shell-script
-  bp add ./components --name react-components`,
+Template names must contain only letters, numbers, and underscores.`,
 	Args:    cobra.ExactArgs(1), // This ensures exactly one fileName is passed
 	Run:     AddCmdRunner,
 	Example: "bp add <template-file/dir> <template-name>",
