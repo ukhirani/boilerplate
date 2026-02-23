@@ -20,6 +20,12 @@ brew install ukhirani/bp/bp
 curl -fsSL https://raw.githubusercontent.com/ukhirani/boilerplate/main/install.sh | sh
 ```
 
+### Windows
+
+```bash
+winget install Ukhirani.Bp
+```
+
 ### If you have go already installed.
 
 ```bash
